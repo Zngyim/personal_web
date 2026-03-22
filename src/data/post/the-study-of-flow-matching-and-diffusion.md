@@ -15,3 +15,7 @@ metadata:
 总结对于两大主流生成式模型Flow Matching & Diffusion的学习，为下一步学习Diffusion Policy以及3D Diffusion Policy奠定基础。
 
 ## 核心思想
+
+$$
+a + b
+$$
