@@ -1,6 +1,5 @@
 ---
 publishDate: 2023-08-12T00:00:00Z
-draft: true
 author: John Smith
 title: The Study of Flow Matching and Diffusion
 excerpt: Start your web journey with AstroWind – harness Astro and Tailwind CSS for a stunning site. Explore our guide now.
