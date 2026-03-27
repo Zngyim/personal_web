@@ -9,6 +9,8 @@ import mdx from '@astrojs/mdx';
 import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import type { AstroIntegration } from 'astro';
 
 import astrowind from './vendor/integration';
@@ -76,8 +78,8 @@ export default defineConfig({
   },
 
   markdown: {
-    remarkPlugins: [readingTimeRemarkPlugin],
-    rehypePlugins: [responsiveTablesRehypePlugin, lazyImagesRehypePlugin],
+    remarkPlugins: [remarkMath, readingTimeRemarkPlugin],
+    rehypePlugins: [rehypeKatex, responsiveTablesRehypePlugin, lazyImagesRehypePlugin],
   },
 
   vite: {
