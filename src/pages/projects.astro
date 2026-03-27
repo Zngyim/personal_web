@@ -1,0 +1,42 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import { getPermalink } from '~/utils/permalinks';
+import { projects } from '~/data/projects';
+
+const metadata = {
+  title: 'Project',
+};
+---
+
+<Layout metadata={metadata}>
+  <div class="max-w-3xl mx-auto px-4 py-10 md:py-14">
+    <section class="mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">Project</h1>
+      <p class="text-base md:text-lg leading-8 text-page dark:text-slate-200">
+        这里用于放置一些独立项目、交互页面和可视化作品。相比博客文章，这些内容更偏向可以直接体验和操作的项目页面。
+      </p>
+    </section>
+
+    <section class="border-t border-gray-200 dark:border-slate-800 pt-8">
+      <ul class="space-y-8">
+        {
+          projects.map((project) => (
+            <li class="border-b border-gray-200 dark:border-slate-800 pb-8">
+              <a
+                class="block overflow-hidden rounded-md border border-gray-200 dark:border-slate-800 mb-4 bg-white dark:bg-slate-900"
+                href={getPermalink(`/projects/${project.slug}`)}
+              >
+                <img src={project.thumbnail} alt={`${project.title} 缩略图`} class="w-full aspect-[16/9] object-cover" loading="lazy" />
+              </a>
+              <h2 class="text-2xl font-semibold text-page dark:text-white mb-2">
+                <a class="hover:underline" href={getPermalink(`/projects/${project.slug}`)}>{project.title}</a>
+              </h2>
+              <p class="text-base leading-7 text-muted dark:text-slate-400 mb-3">{project.description}</p>
+              <a class="text-sm text-primary hover:underline" href={getPermalink(`/projects/${project.slug}`)}>查看项目 →</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</Layout>

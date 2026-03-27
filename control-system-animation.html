@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>自动控制系统框图信息流动画</title>
+  <style>
+    :root {
+      --paper: #f6f0c9;
+      --paper-deep: #efe3a8;
+      --ink: #222;
+      --accent: #5e2750;
+      --accent-soft: #8f5a81;
+      --green: #dff1d7;
+      --blue: #dde9ff;
+      --orange: #ffe6c7;
+      --rose: #ffe0df;
+      --violet: #ece2ff;
+      --line: #222;
+      --line-active: #d9485f;
+      --signal: #d9485f;
+      --feedback: #5b56c8;
+      --shadow: 0 10px 28px rgba(88, 66, 24, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(94, 39, 80, 0.08), transparent 140px),
+        linear-gradient(135deg, #faf5d9, #f3ecc2);
+    }
+
+    .shell {
+      width: min(1380px, 100%);
+      margin: 0 auto;
+      background: linear-gradient(180deg, var(--paper), #fbf7dd);
+      border: 1px solid rgba(94, 39, 80, 0.18);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 26px 30px 14px;
+      border-bottom: 4px solid rgba(94, 39, 80, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: clamp(30px, 3.4vw, 52px);
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 840px;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid rgba(94, 39, 80, 0.2);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      background: #fffaf0;
+      color: var(--accent);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      box-shadow: 0 4px 12px rgba(94, 39, 80, 0.08);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: #fff;
+    }
+
+    button.primary {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    .stage-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(320px, 0.92fr);
+      gap: 18px;
+      padding: 22px 22px 12px;
+    }
+
+    .board,
+    .side-panel,
+    .notes {
+      background: rgba(255, 251, 234, 0.9);
+      border: 1px solid rgba(94, 39, 80, 0.12);
+      border-radius: 18px;
+      box-shadow: 0 8px 18px rgba(94, 39, 80, 0.06);
+    }
+
+    .board {
+      padding: 16px 16px 8px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .rule-line {
+      height: 6px;
+      margin: 0 22px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(94, 39, 80, 0.35), rgba(94, 39, 80, 0.1));
+    }
+
+    .frame-line {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .flow-line {
+      fill: none;
+      stroke: var(--line-active);
+      stroke-width: 4.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 16 14;
+      animation: dash 1.35s linear infinite;
+      opacity: 0.85;
+    }
+
+    .feedback-line {
+      stroke: var(--feedback);
+    }
+
+    .disturbance-line {
+      stroke: #444;
+      stroke-width: 3;
+      stroke-linecap: round;
+    }
+
+    .block {
+      fill: #fffdf3;
+      stroke: #4d443f;
+      stroke-width: 2.2;
+      rx: 8;
+      ry: 8;
+      transition: fill 0.35s ease, stroke 0.35s ease, transform 0.35s ease;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .block.input {
+      fill: #fff8db;
+    }
+
+    .block.controller {
+      fill: var(--green);
+    }
+
+    .block.amplifier {
+      fill: var(--blue);
+    }
+
+    .block.actuator {
+      fill: var(--orange);
+    }
+
+    .block.plant {
+      fill: var(--rose);
+    }
+
+    .block.feedback-block {
+      fill: var(--violet);
+    }
+
+    .sum-circle {
+      fill: #fff;
+      stroke: #4d443f;
+      stroke-width: 2.2;
+      transition: fill 0.35s ease, stroke 0.35s ease;
+    }
+
+    .node.active .block,
+    .node.active .sum-circle {
+      fill: #fff4a8;
+      stroke: var(--line-active);
+      stroke-width: 3;
+      transform: scale(1.03);
+    }
+
+    .node-label {
+      font-size: 16px;
+      font-weight: 700;
+      fill: #222;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .signal-label {
+      font-size: 15px;
+      font-weight: 700;
+      fill: #2f2f2f;
+    }
+
+    .plus-minus {
+      font-size: 26px;
+      font-weight: 700;
+      fill: #222;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .explain-label {
+      font-size: 15px;
+      font-weight: 700;
+      fill: var(--accent);
+    }
+
+    .hint {
+      font-size: 13px;
+      fill: #6b625d;
+    }
+
+    .signal-dot {
+      fill: var(--signal);
+      filter: drop-shadow(0 0 3px rgba(217, 72, 95, 0.55));
+    }
+
+    .feedback-dot {
+      fill: var(--feedback);
+      filter: drop-shadow(0 0 3px rgba(91, 86, 200, 0.55));
+    }
+
+    .side-panel {
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(94, 39, 80, 0.1);
+    }
+
+    .lecture-title {
+      margin: 0;
+      color: var(--accent);
+      font-size: 24px;
+    }
+
+    .lecture-box {
+      min-height: 210px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #fffef6;
+      border: 1px solid rgba(94, 39, 80, 0.12);
+    }
+
+    .lecture-box h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    .lecture-box p {
+      margin: 0 0 10px;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .mini-progress {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(94, 39, 80, 0.1);
+      overflow: hidden;
+    }
+
+    .mini-progress > span {
+      display: block;
+      height: 100%;
+      width: 12.5%;
+      background: linear-gradient(90deg, var(--accent), #d9485f);
+      transition: width 0.35s ease;
+    }
+
+    .phase-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .phase-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(94, 39, 80, 0.08);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .phase-item.active {
+      background: #fff2cf;
+      border-color: rgba(217, 72, 95, 0.35);
+      color: #7e2130;
+      font-weight: 700;
+    }
+
+    .notes {
+      margin: 10px 22px 24px;
+      padding: 18px 20px 20px;
+    }
+
+    .notes h2 {
+      margin: 0 0 14px;
+      color: var(--accent);
+      font-size: 28px;
+    }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .note-card {
+      padding: 14px 14px 12px;
+      border-radius: 14px;
+      background: #fffef6;
+      border: 1px solid rgba(94, 39, 80, 0.1);
+    }
+
+    .note-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-size: 17px;
+    }
+
+    .note-card p {
+      margin: 0;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .paused .flow-line,
+    .paused .signal-dot,
+    .paused .feedback-dot {
+      animation-play-state: paused;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -30;
+      }
+    }
+
+    @media (max-width: 1150px) {
+      .stage-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        padding: 20px 18px 12px;
+      }
+
+      .stage-row,
+      .notes {
+        margin: 0;
+      }
+
+      .stage-row {
+        padding: 16px;
+      }
+
+      .notes {
+        margin: 0 16px 18px;
+      }
+
+      .subtitle,
+      .lecture-box p,
+      .note-card p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell" id="app">
+    <div class="topbar">
+      <div>
+        <h1>自动控制系统的框图</h1>
+        <p class="subtitle">
+          这个动画描述了“信息在系统中怎样流动”。我们从给定输入出发，经过比较、控制、放大、执行和被控对象，最后得到输出；同时，输出又通过反馈回到前端，帮助系统不断修正误差。
+        </p>
+      </div>
+      <div class="controls">
+        <button class="primary" id="toggleBtn">暂停讲解</button>
+        <button id="replayBtn">重新演示</button>
+      </div>
+    </div>
+
+    <div class="rule-line"></div>
+
+    <div class="stage-row">
+      <div class="board">
+        <svg id="diagram" viewBox="0 0 1120 560" aria-label="自动控制系统框图教学动画">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#222"></path>
+            </marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#d9485f"></path>
+            </marker>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#5b56c8"></path>
+            </marker>
+
+            <path id="p1" d="M140 190 H230" />
+            <path id="p2" d="M288 190 H340" />
+            <path id="p3" d="M470 190 H520" />
+            <path id="p4" d="M640 190 H690" />
+            <path id="p5" d="M810 190 H860" />
+            <path id="p6" d="M980 190 H1080" />
+            <path id="fb1" d="M1020 195 V420 H605" />
+            <path id="fb2" d="M495 420 H270 V220" />
+            <path id="dist" d="M930 60 V145" />
+          </defs>
+
+          <g class="node" data-step="0">
+            <rect class="block input" x="28" y="140" width="112" height="100"></rect>
+            <text class="node-label" x="84" y="190">给定环节</text>
+          </g>
+
+          <g class="node" data-step="1">
+            <circle class="sum-circle" cx="260" cy="190" r="28"></circle>
+            <text class="plus-minus" x="247" y="174">+</text>
+            <text class="plus-minus" x="278" y="209">−</text>
+          </g>
+
+          <g class="node" data-step="2">
+            <rect class="block controller" x="340" y="128" width="130" height="124"></rect>
+            <text class="node-label" x="405" y="190">控制器</text>
+          </g>
+
+          <g class="node" data-step="3">
+            <rect class="block amplifier" x="520" y="128" width="120" height="124"></rect>
+            <text class="node-label" x="580" y="190">放大环节</text>
+          </g>
+
+          <g class="node" data-step="4">
+            <rect class="block actuator" x="690" y="128" width="120" height="124"></rect>
+            <text class="node-label" x="750" y="190">执行环节</text>
+          </g>
+
+          <g class="node" data-step="5">
+            <rect class="block plant" x="860" y="128" width="120" height="124"></rect>
+            <text class="node-label" x="920" y="190">被控对象</text>
+          </g>
+
+          <g class="node" data-step="7">
+            <rect class="block feedback-block" x="495" y="385" width="110" height="74"></rect>
+            <text class="node-label" x="550" y="422">反馈环节</text>
+          </g>
+
+          <path class="frame-line" d="M140 190 H230" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M288 190 H340" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M470 190 H520" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M640 190 H690" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M810 190 H860" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M980 190 H1080" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M1020 195 V420 H605" marker-end="url(#arrow)"></path>
+          <path class="frame-line" d="M495 420 H260 V220" marker-end="url(#arrow)"></path>
+          <path class="disturbance-line" d="M930 60 V128" marker-end="url(#arrow)"></path>
+
+          <path class="flow-line" d="M140 190 H230" marker-end="url(#arrow-red)"></path>
+          <path class="flow-line" d="M288 190 H340" marker-end="url(#arrow-red)"></path>
+          <path class="flow-line" d="M470 190 H520" marker-end="url(#arrow-red)"></path>
+          <path class="flow-line" d="M640 190 H690" marker-end="url(#arrow-red)"></path>
+          <path class="flow-line" d="M810 190 H860" marker-end="url(#arrow-red)"></path>
+          <path class="flow-line" d="M980 190 H1080" marker-end="url(#arrow-red)"></path>
+          <path class="flow-line feedback-line" d="M1020 195 V420 H605" marker-end="url(#arrow-blue)"></path>
+          <path class="flow-line feedback-line" d="M495 420 H260 V220" marker-end="url(#arrow-blue)"></path>
+
+          <text class="signal-label" x="148" y="150">给定输入</text>
+          <text class="signal-label" x="306" y="150">误差</text>
+          <text class="signal-label" x="1000" y="150">输出</text>
+          <text class="signal-label" x="265" y="312">反 馈</text>
+          <text class="signal-label" x="265" y="338">信 号</text>
+          <text class="signal-label" x="940" y="52">扰动</text>
+
+          <text class="hint" x="72" y="268">产生给定输入信号</text>
+          <text class="hint" x="370" y="274">根据误差产生控制指令</text>
+          <text class="hint" x="523" y="274">增强控制信号</text>
+          <text class="hint" x="693" y="274">把控制信号转成实际动作</text>
+          <text class="hint" x="850" y="274">设备或过程本身</text>
+          <text class="hint" x="468" y="482">对输出进行测量并返回</text>
+
+          <circle class="signal-dot" r="7">
+            <animateMotion dur="8s" repeatCount="indefinite">
+              <mpath href="#p1"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="signal-dot" r="7">
+            <animateMotion begin="0.55s" dur="8s" repeatCount="indefinite">
+              <mpath href="#p2"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="signal-dot" r="7">
+            <animateMotion begin="1.15s" dur="8s" repeatCount="indefinite">
+              <mpath href="#p3"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="signal-dot" r="7">
+            <animateMotion begin="1.75s" dur="8s" repeatCount="indefinite">
+              <mpath href="#p4"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="signal-dot" r="7">
+            <animateMotion begin="2.35s" dur="8s" repeatCount="indefinite">
+              <mpath href="#p5"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="signal-dot" r="7">
+            <animateMotion begin="2.95s" dur="8s" repeatCount="indefinite">
+              <mpath href="#p6"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="feedback-dot" r="6">
+            <animateMotion begin="3.7s" dur="8s" repeatCount="indefinite">
+              <mpath href="#fb1"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="feedback-dot" r="6">
+            <animateMotion begin="4.45s" dur="8s" repeatCount="indefinite">
+              <mpath href="#fb2"></mpath>
+            </animateMotion>
+          </circle>
+          <circle class="signal-dot" r="6">
+            <animateMotion begin="2.5s" dur="8s" repeatCount="indefinite">
+              <mpath href="#dist"></mpath>
+            </animateMotion>
+          </circle>
+        </svg>
+      </div>
+
+      <aside class="side-panel">
+        <h2 class="lecture-title">动画说明</h2>
+
+        <div class="lecture-box">
+          <h3 id="stageTitle">第一步：给定环节</h3>
+          <p id="stageText">系统首先要知道“我们希望它做成什么样”。这个期望值，就是给定输入。</p>
+          <p id="stageSummary">请同学们先记住一句话：自动控制系统的任务，就是让实际输出尽量跟上给定要求。</p>
+        </div>
+
+        <div class="mini-progress"><span id="progressBar"></span></div>
+
+        <div class="phase-list" id="phaseList">
+          <div class="phase-item active">1. 给定环节：提出目标。</div>
+          <div class="phase-item">2. 比较环节：比较目标与反馈，产生误差。</div>
+          <div class="phase-item">3. 控制器：根据误差决定如何调节。</div>
+          <div class="phase-item">4. 放大环节：增强控制信号。</div>
+          <div class="phase-item">5. 执行环节：把电信号变成机械或物理动作。</div>
+          <div class="phase-item">6. 被控对象：真正被调节的设备或过程。</div>
+          <div class="phase-item">7. 输出与扰动：系统结果会受到外界影响。</div>
+          <div class="phase-item">8. 反馈环节：测量输出并送回前端，形成闭环。</div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="notes">
+      <h2>自动控制系统的组成</h2>
+      <div class="note-grid">
+        <div class="note-card">
+          <strong>给定环节</strong>
+          <p>产生给定的输入信号，也就是告诉系统“应该达到什么目标”。</p>
+        </div>
+        <div class="note-card">
+          <strong>反馈环节</strong>
+          <p>对系统输出进行测量，并把它转换成反馈信号送回前端。</p>
+        </div>
+        <div class="note-card">
+          <strong>比较环节</strong>
+          <p>把给定输入和反馈信号进行比较，得到误差信号，这是调节的依据。</p>
+        </div>
+        <div class="note-card">
+          <strong>控制器（调节器）</strong>
+          <p>根据误差按一定规律发出控制指令，决定系统怎样修正偏差。</p>
+        </div>
+        <div class="note-card">
+          <strong>执行环节（执行机构）</strong>
+          <p>把控制信号转化为实际动作，使被控对象的被控量发生变化。</p>
+        </div>
+        <div class="note-card">
+          <strong>被控对象</strong>
+          <p>控制系统真正要控制的设备或生产过程，它的输出就是被控量。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const app = document.getElementById("app");
+    const diagram = document.getElementById("diagram");
+    const toggleBtn = document.getElementById("toggleBtn");
+    const replayBtn = document.getElementById("replayBtn");
+    const stageTitle = document.getElementById("stageTitle");
+    const stageText = document.getElementById("stageText");
+    const stageSummary = document.getElementById("stageSummary");
+    const progressBar = document.getElementById("progressBar");
+    const phaseItems = Array.from(document.querySelectorAll(".phase-item"));
+    const nodes = Array.from(document.querySelectorAll(".node"));
+
+    const stages = [
+      {
+        node: 0,
+        title: "第一步：给定环节",
+        text: "先给系统一个明确目标，例如希望电机转到多少转速、室温保持在多少摄氏度。",
+        summary: "给定输入回答的是“想要什么”。没有它，系统就没有控制目标。"
+      },
+      {
+        node: 1,
+        title: "第二步：比较环节",
+        text: "比较环节把目标值和反馈回来的实际情况放在一起比较，得到误差。",
+        summary: "误差越大，说明实际状态离目标越远，系统就越需要调节。"
+      },
+      {
+        node: 2,
+        title: "第三步：控制器",
+        text: "控制器根据误差信号进行判断，决定应该给出多大的控制作用。",
+        summary: "它相当于系统的“大脑”，负责生成调节策略。"
+      },
+      {
+        node: 3,
+        title: "第四步：放大环节",
+        text: "有些控制信号太弱，不能直接驱动设备，所以需要先放大。",
+        summary: "放大环节的作用，是让控制信号具有足够的能量。"
+      },
+      {
+        node: 4,
+        title: "第五步：执行环节",
+        text: "执行环节把控制信号真正落实成动作，例如电机转动、阀门开合。",
+        summary: "这一部分把“指令”变成“行动”。"
+      },
+      {
+        node: 5,
+        title: "第六步：被控对象",
+        text: "被控对象就是我们真正关心的设备或过程，它最终产生系统输出。",
+        summary: "输出是否接近目标，要看被控对象在控制下的响应。"
+      },
+      {
+        node: 5,
+        title: "第七步：输出与扰动",
+        text: "系统产生输出后，外界扰动也可能影响结果，比如负载变化、环境变化。",
+        summary: "自动控制的价值之一，就是在扰动存在时仍尽量保持输出稳定。"
+      },
+      {
+        node: 7,
+        title: "第八步：反馈环节",
+        text: "反馈环节把输出测量后送回前端，再次参与比较，这就形成了闭环。",
+        summary: "闭环系统会不断发现误差、修正误差，所以通常比开环系统更准确。"
+      }
+    ];
+
+    let currentStage = 0;
+    let paused = false;
+    let timerId = null;
+
+    function renderStage(index) {
+      const stage = stages[index];
+
+      nodes.forEach((node) => {
+        const step = Number(node.dataset.step);
+        const isActive = step === stage.node || (index === 6 && step === 5);
+        node.classList.toggle("active", isActive);
+      });
+
+      phaseItems.forEach((item, itemIndex) => {
+        item.classList.toggle("active", itemIndex === index);
+      });
+
+      stageTitle.textContent = stage.title;
+      stageText.textContent = stage.text;
+      stageSummary.textContent = stage.summary;
+      progressBar.style.width = `${((index + 1) / stages.length) * 100}%`;
+    }
+
+    function nextStage() {
+      currentStage = (currentStage + 1) % stages.length;
+      renderStage(currentStage);
+    }
+
+    function startLecture() {
+      clearInterval(timerId);
+      timerId = window.setInterval(() => {
+        if (!paused) {
+          nextStage();
+        }
+      }, 2400);
+    }
+
+    function setPaused(nextPaused) {
+      paused = nextPaused;
+      app.classList.toggle("paused", paused);
+      toggleBtn.textContent = paused ? "继续讲解" : "暂停讲解";
+
+      if (paused) {
+        diagram.pauseAnimations();
+      } else {
+        diagram.unpauseAnimations();
+      }
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      setPaused(!paused);
+    });
+
+    replayBtn.addEventListener("click", () => {
+      window.location.reload();
+    });
+
+    renderStage(currentStage);
+    startLecture();
+  </script>
+</body>
+</html>

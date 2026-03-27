@@ -14,6 +14,10 @@ export const headerData = {
       text: 'Research',
       href: getPermalink('/research'),
     },
+    {
+      text: 'Project',
+      href: getPermalink('/projects'),
+    },
   ],
   actions: [],
 };
@@ -26,6 +30,7 @@ export const footerData = {
         { text: 'Home', href: getPermalink('/') },
         { text: 'Blog', href: getBlogPermalink() },
         { text: 'Research', href: getPermalink('/research') },
+        { text: 'Project', href: getPermalink('/projects') },
       ],
     },
     {
@@ -41,6 +46,7 @@ export const footerData = {
       links: [
         { text: '文章按时间与类别归档', href: getBlogPermalink() },
         { text: '研究方向与计划见 Research 页面', href: getPermalink('/research') },
+        { text: '项目页面见 Project', href: getPermalink('/projects') },
       ],
     },
   ],
