@@ -1,5 +1,5 @@
 ---
-publishDate: 2026-3-27
+publishDate: 2026-03-27T00:00:00Z
 title: Diffusion and Flow matching
 excerpt: The summary about two generative models, Diffusion and Flow matching, which based on MIT6.S184.
 category: 研究笔记
