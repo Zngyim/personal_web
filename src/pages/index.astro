@@ -1,133 +1,80 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-
-import Hero from '~/components/widgets/Hero.astro';
-import Features2 from '~/components/widgets/Features2.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import Content from '~/components/widgets/Content.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import { findLatestPosts } from '~/utils/blog';
 import { getBlogPermalink, getPermalink } from '~/utils/permalinks';
+import { getFormattedDate } from '~/utils/utils';
 
 const metadata = {
   title: 'Home',
   ignoreTitleTemplate: true,
 };
+
+const posts = await findLatestPosts({ count: 5 });
 ---
 
 <Layout metadata={metadata}>
-  <Hero
-    id="home"
-    tagline="Academic Blog"
-    actions={[
-      {
-        variant: 'primary',
-        text: '进入博客',
-        href: getBlogPermalink(),
-      },
-      {
-        text: '查看 Research',
-        href: getPermalink('/research'),
-      },
-    ]}
-  >
-    <Fragment slot="title">
-      一个简洁的个人主页，用来记录
-      <span class="text-accent dark:text-white">研究</span>、<span class="text-accent dark:text-white">学习</span>与
-      <span class="text-accent dark:text-white">思考</span>
-    </Fragment>
-
-    <Fragment slot="subtitle">
-      这里主要放研究笔记、理论学习过程、阶段性总结与一些较慢的个人思考。整体风格尽量克制，让内容本身成为页面的重点。
-    </Fragment>
-  </Hero>
-
-  <Features2
-    id="columns"
-    tagline="Columns"
-    title="主要专栏"
-    subtitle="先用几个稳定栏目组织内容，后续可以继续细分。"
-    items={[
-      {
-        title: '研究笔记',
-        description: '记录论文阅读、问题拆解、方法比较，以及还没有完全想清楚但值得继续追踪的想法。',
-        icon: 'tabler:notebook',
-      },
-      {
-        title: '理论学习',
-        description: '系统整理基础概念、关键定理、方法脉络与个人理解，适合长期迭代与反复回看。',
-        icon: 'tabler:books',
-      },
-      {
-        title: '思考随笔',
-        description: '保留一些不完全学术化的写作空间，用来整理阅读后的联想、方法论判断与阶段性反思。',
-        icon: 'tabler:bulb',
-      },
-    ]}
-  />
-
-  <Content
-    id="about"
-    tagline="About"
-    title="把它当作你的线上研究档案"
-    items={[
-      {
-        title: '持续积累',
-        description: '把分散的笔记、阅读摘录和零散想法沉淀成可以检索、可以回顾、可以继续扩展的文章。',
-      },
-      {
-        title: '结构清晰',
-        description: '用首页、博客与研究页面区分不同类型的信息，让读者快速理解你的关注方向与写作重点。',
-      },
-      {
-        title: '面向长期写作',
-        description: '设计不追求花哨，而是优先保证可读性、可维护性，以及后续扩充内容时的稳定性。',
-      },
-    ]}
-  >
-    <Fragment slot="content">
-      <h2 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">现在这个版本更适合学术博客场景</h2>
-      <p>
-        首页负责说明你是谁、你在做什么，以及最近在关注什么问题；博客页负责按时间流与分类组织文章；`Research`
-        页面则更适合承载研究方向、项目计划、论文清单与未来工作。
+  <div class="max-w-3xl mx-auto px-4 py-10 md:py-14">
+    <section class="mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">Welcome to Academic Notes</h1>
+      <p class="text-base md:text-lg leading-8 text-page dark:text-slate-200">
+        这是一个偏学术风格的个人网站，用来记录研究笔记、理论学习过程，以及一些较慢的思考。相比展示型主页，我更希望它像一个长期维护的阅读与写作空间。
       </p>
-      <br />
-      <p>
-        当前先提供一套通用骨架。后续你只需要把姓名、简介、方向、论文和文章内容替换成自己的，就能很快变成个人学术主页。
+      <p class="mt-4 text-base leading-8 text-muted dark:text-slate-400">
+        你可以先从 <a class="text-primary hover:underline" href={getBlogPermalink()}>Blog</a> 看最近的文章，也可以去
+        <a class="text-primary hover:underline" href={getPermalink('/research')}>Research</a> 看更稳定的研究方向与计划。
       </p>
-    </Fragment>
-  </Content>
+    </section>
 
-  <Steps
-    id="focus"
-    title="当前适合放在首页的信息"
-    subtitle="相比营销型模板，这里更适合展示稳定、低噪声、能帮助读者快速理解你的内容。"
-    items={[
-      {
-        title: '个人简介',
-        description: '简短介绍你的研究背景、当前方向、所属院校或实验室，以及这个网站的写作目标。',
-        icon: 'tabler:user',
-      },
-      {
-        title: '近期关注的问题',
-        description: '用 2 到 4 个主题概括最近的研究或学习重点，例如生成模型、优化理论、具身智能等。',
-        icon: 'tabler:focus-2',
-      },
-      {
-        title: '最新文章',
-        description: '首页底部直接展示最近几篇文章，方便读者快速进入你当前的写作脉络。',
-        icon: 'tabler:article',
-      },
-      {
-        title: '研究页面',
-        description: '把更长期的信息放进独立页面，例如论文、项目、计划、课程笔记与未来工作。',
-        icon: 'tabler:flask-2',
-      },
-    ]}
-  />
+    <section class="mb-12 border-t border-gray-200 dark:border-slate-800 pt-8">
+      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">About</h2>
+      <div class="space-y-4 text-base leading-8 text-page dark:text-slate-200">
+        <p>
+          这个首页不再承担“展示很多模块”的任务，而是只保留最必要的信息：你是谁、你在关注什么、以及别人应该从哪里开始读你的内容。
+        </p>
+        <p>
+          这种组织方式很接近 <a class="text-primary hover:underline" href="https://lilianweng.github.io/">Lil'Log</a>
+          的阅读体验：正文优先、导航简单、视觉克制，尽量让页面像一份持续更新的研究记录。
+        </p>
+      </div>
+    </section>
 
-  <BlogLatestPosts
-    title="最新文章"
-    linkText="查看全部文章"
-    information="这里展示最近更新的研究笔记、理论学习与思考随笔。后续你只需要持续写作，首页就会自动同步最新内容。"
-  />
+    <section class="mb-12 border-t border-gray-200 dark:border-slate-800 pt-8">
+      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">Topics</h2>
+      <ul class="space-y-3 text-base leading-8 text-page dark:text-slate-200">
+        <li><span class="font-medium">研究笔记：</span>记录论文阅读、方法比较、实验设想与未完成的问题。</li>
+        <li><span class="font-medium">理论学习：</span>把概率、优化、统计学习等内容重新整理成长期可复用的知识框架。</li>
+        <li><span class="font-medium">思考随笔：</span>保留一些不完全学术化但对研究过程很重要的反思和判断。</li>
+      </ul>
+    </section>
+
+    <section class="border-t border-gray-200 dark:border-slate-800 pt-8">
+      <div class="flex items-center justify-between gap-4 mb-5">
+        <h2 class="text-2xl font-semibold text-page dark:text-white">Latest Posts</h2>
+        <a class="text-sm text-primary hover:underline whitespace-nowrap" href={getBlogPermalink()}>View all posts</a>
+      </div>
+      <ul class="space-y-6">
+        {
+          posts.map((post) => (
+            <li class="pb-6 border-b border-gray-100 last:border-b-0 dark:border-slate-800">
+              <div class="text-sm text-muted dark:text-slate-400 mb-1">
+                {getFormattedDate(post.publishDate)}
+                {post.category && (
+                  <>
+                    {' '}
+                    · <a class="hover:underline" href={getPermalink(post.category.slug, 'category')}>{post.category.title}</a>
+                  </>
+                )}
+              </div>
+              <h3 class="text-xl font-semibold text-page dark:text-white mb-2">
+                <a class="hover:underline" href={getPermalink(post.permalink, 'post')}>
+                  {post.title}
+                </a>
+              </h3>
+              {post.excerpt && <p class="text-base leading-7 text-muted dark:text-slate-400">{post.excerpt}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
 </Layout>

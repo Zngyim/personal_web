@@ -1,4 +1,4 @@
-import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { getPermalink, getBlogPermalink } from './utils/permalinks';
 
 export const headerData = {
   links: [
@@ -43,10 +43,6 @@ export const footerData = {
         { text: '研究方向与计划见 Research 页面', href: getPermalink('/research') },
       ],
     },
-  ],
-  secondaryLinks: [{ text: 'RSS', href: getAsset('/rss.xml') }],
-  socialLinks: [
-    { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },
   ],
   footNote: `
     用于记录研究、学习与写作过程。
