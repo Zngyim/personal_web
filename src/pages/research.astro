@@ -8,46 +8,14 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <div class="max-w-3xl mx-auto px-4 py-10 md:py-14">
-    <section class="mb-12">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">Research</h1>
-      <p class="text-base md:text-lg leading-8 text-page dark:text-slate-200">
-        这个页面更适合承载不会频繁变化的内容，例如研究兴趣、长期问题、项目计划、论文线索和未来准备继续推进的主题。
+  <div class="max-w-3xl mx-auto px-4 min-h-[72vh] flex items-start justify-center pt-[18vh] pb-24 md:pt-[22vh] md:pb-32">
+    <section class="text-center">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-5">Research</h1>
+      <p class="text-base md:text-lg leading-8 text-muted dark:text-slate-400 max-w-2xl mx-auto">
+        Research interests and ongoing work will be added here in the future.
       </p>
-      <p class="mt-4 text-base leading-8 text-muted dark:text-slate-400">
-        如果首页负责“介绍”，博客负责“更新”，那么 `Research` 更像一份稳定的研究档案。
-      </p>
-    </section>
-
-    <section class="mb-12 border-t border-gray-200 dark:border-slate-800 pt-8">
-      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">Interests</h2>
-      <ul class="space-y-3 text-base leading-8 text-page dark:text-slate-200">
-        <li><span class="font-medium">生成模型：</span>扩散模型、Flow Matching、表征学习，以及生成方法与下游任务的连接。</li>
-        <li><span class="font-medium">理论学习：</span>概率建模、优化方法、统计学习，以及这些工具和现代模型之间的关系。</li>
-        <li><span class="font-medium">研究方法：</span>如何读论文、拆问题、设计实验，并把失败经验也纳入研究过程。</li>
-      </ul>
-    </section>
-
-    <section class="mb-12 border-t border-gray-200 dark:border-slate-800 pt-8">
-      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">Ongoing</h2>
-      <div class="space-y-4 text-base leading-8 text-page dark:text-slate-200">
-        <p>这里后续可以逐步补充成更具体的内容：</p>
-        <ul class="list-disc pl-6 space-y-2">
-          <li>当前正在阅读的论文或书目</li>
-          <li>阶段性研究问题与假设</li>
-          <li>课程项目、实验计划或开源工作</li>
-          <li>一条适合长期维护的阅读路径</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="border-t border-gray-200 dark:border-slate-800 pt-8">
-      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">Writing</h2>
-      <p class="text-base leading-8 text-page dark:text-slate-200">
-        更及时的内容会先写进博客。等到某个方向逐渐成熟，再把其中稳定的部分沉淀回这个页面。
-      </p>
-      <p class="mt-4">
-        <a class="text-primary hover:underline" href={getBlogPermalink()}>去 Blog 查看最新文章</a>
+      <p class="mt-8">
+        <a class="text-sm text-primary hover:underline" href={getBlogPermalink()}>Go to Blog</a>
       </p>
     </section>
   </div>
