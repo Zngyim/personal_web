@@ -15,36 +15,8 @@ const posts = await findLatestPosts({ count: 5 });
 <Layout metadata={metadata}>
   <div class="max-w-3xl mx-auto px-4 py-10 md:py-14">
     <section class="mb-12">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">Welcome to Academic Notes</h1>
-      <p class="text-base md:text-lg leading-8 text-page dark:text-slate-200">
-        这是一个偏学术风格的个人网站，用来记录研究笔记、理论学习过程，以及一些较慢的思考。相比展示型主页，我更希望它像一个长期维护的阅读与写作空间。
-      </p>
-      <p class="mt-4 text-base leading-8 text-muted dark:text-slate-400">
-        你可以先从 <a class="text-primary hover:underline" href={getBlogPermalink()}>Blog</a> 看最近的文章，也可以去
-        <a class="text-primary hover:underline" href={getPermalink('/research')}>Research</a> 看更稳定的研究方向与计划。
-      </p>
-    </section>
-
-    <section class="mb-12 border-t border-gray-200 dark:border-slate-800 pt-8">
-      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">About</h2>
-      <div class="space-y-4 text-base leading-8 text-page dark:text-slate-200">
-        <p>
-          这个首页不再承担“展示很多模块”的任务，而是只保留最必要的信息：你是谁、你在关注什么、以及别人应该从哪里开始读你的内容。
-        </p>
-        <p>
-          这种组织方式很接近 <a class="text-primary hover:underline" href="https://lilianweng.github.io/">Lil'Log</a>
-          的阅读体验：正文优先、导航简单、视觉克制，尽量让页面像一份持续更新的研究记录。
-        </p>
-      </div>
-    </section>
-
-    <section class="mb-12 border-t border-gray-200 dark:border-slate-800 pt-8">
-      <h2 class="text-2xl font-semibold text-page dark:text-white mb-4">Topics</h2>
-      <ul class="space-y-3 text-base leading-8 text-page dark:text-slate-200">
-        <li><span class="font-medium">研究笔记：</span>记录论文阅读、方法比较、实验设想与未完成的问题。</li>
-        <li><span class="font-medium">理论学习：</span>把概率、优化、统计学习等内容重新整理成长期可复用的知识框架。</li>
-        <li><span class="font-medium">思考随笔：</span>保留一些不完全学术化但对研究过程很重要的反思和判断。</li>
-      </ul>
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">Hi, I'm Yiming</h1>
+      <p class="text-base md:text-lg leading-8 text-muted dark:text-slate-400">这里记录我的学习、思考与研究笔记</p>
     </section>
 
     <section class="border-t border-gray-200 dark:border-slate-800 pt-8">

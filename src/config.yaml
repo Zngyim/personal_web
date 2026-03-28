@@ -1,5 +1,5 @@
 site:
-  name: Academic Notes
+  name: Yiming's Notes
   site: 'https://example.com'
   base: '/'
   trailingSlash: false
@@ -9,14 +9,14 @@ site:
 # Default SEO metadata
 metadata:
   title:
-    default: Academic Notes
-    template: '%s | Academic Notes'
+    default: Yiming's Notes
+    template: '%s | Yiming''s Notes'
   description: '一个简洁的学术博客与个人研究主页，用于记录研究笔记、理论学习与日常思考。'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: Academic Notes
+    site_name: Yiming's Notes
     images:
       - url: '~/assets/images/default.png'
         width: 1200
