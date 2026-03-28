@@ -47,11 +47,11 @@ const { post } = Astro.props;
           }
         </p>
       </div>
-      <h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tight text-page dark:text-white">{post.title}</h1>
-      {post.excerpt && <p class="mt-4 text-lg leading-8 text-muted dark:text-slate-400">{post.excerpt}</p>}
+      <h1 class="text-3xl md:text-4xl font-bold leading-tight tracking-tight text-page dark:text-white">{post.title}</h1>
+      {post.excerpt && <p class="mt-4 text-base leading-7 text-muted dark:text-slate-400">{post.excerpt}</p>}
     </header>
     <div
-      class="mx-auto px-4 max-w-3xl prose prose-lg dark:prose-invert prose-headings:text-page dark:prose-headings:text-white prose-headings:font-heading prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-sm prose-img:shadow-none mt-10 prose-headings:scroll-mt-[80px] prose-li:my-1"
+      class="mx-auto px-4 max-w-3xl prose prose-base leading-8 font-serif dark:prose-invert prose-headings:text-page dark:prose-headings:text-white prose-headings:font-serif prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-sm prose-img:shadow-none mt-10 prose-headings:scroll-mt-[80px] prose-li:my-1"
     >
       <slot />
     </div>
