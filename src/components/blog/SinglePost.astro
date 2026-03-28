@@ -72,7 +72,11 @@ const tocHeadings = (post.headings || []).filter((heading) => heading.depth >= 2
                 <ul class="space-y-3 text-sm text-muted dark:text-slate-400">
                   {tocHeadings.map((heading) => (
                     <li class:list={[heading.depth === 3 ? 'ml-4' : 'ml-0']}>
-                      <a class="hover:text-page hover:underline dark:hover:text-white" href={`#${heading.slug}`}>
+                      <a
+                        class="block border-l-2 border-transparent pl-3 transition-colors hover:text-page hover:underline dark:hover:text-white"
+                        data-toc-link={heading.slug}
+                        href={`#${heading.slug}`}
+                      >
                         {heading.text}
                       </a>
                     </li>
@@ -86,3 +90,65 @@ const tocHeadings = (post.headings || []).filter((heading) => heading.depth >= 2
     </div>
   </article>
 </section>
+
+<script is:inline>
+  (() => {
+    const setupActiveToc = () => {
+      const tocLinks = Array.from(document.querySelectorAll('[data-toc-link]'));
+      if (!tocLinks.length) return;
+
+      const headings = tocLinks
+        .map((link) => {
+          const slug = link.getAttribute('data-toc-link');
+          if (!slug) return null;
+          const element = document.getElementById(slug);
+          return element ? { slug, element, link } : null;
+        })
+        .filter(Boolean);
+
+      if (!headings.length) return;
+
+      const setActive = (activeSlug) => {
+        headings.forEach(({ slug, link }) => {
+          const isActive = slug === activeSlug;
+          link.classList.toggle('text-page', isActive);
+          link.classList.toggle('dark:text-white', isActive);
+          link.classList.toggle('font-semibold', isActive);
+          link.classList.toggle('border-gray-400', isActive);
+          link.classList.toggle('dark:border-slate-500', isActive);
+
+          link.classList.toggle('text-muted', !isActive);
+          link.classList.toggle('dark:text-slate-400', !isActive);
+        });
+      };
+
+      setActive(headings[0].slug);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visibleHeadings = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+          if (!visibleHeadings.length) return;
+
+          setActive(visibleHeadings[0].target.id);
+        },
+        {
+          rootMargin: '-20% 0px -65% 0px',
+          threshold: [0, 1],
+        }
+      );
+
+      headings.forEach(({ element }) => observer.observe(element));
+
+      if (window.__awBlogTocObserver) {
+        window.__awBlogTocObserver.disconnect();
+      }
+      window.__awBlogTocObserver = observer;
+    };
+
+    document.addEventListener('astro:page-load', setupActiveToc);
+    setupActiveToc();
+  })();
+</script>
