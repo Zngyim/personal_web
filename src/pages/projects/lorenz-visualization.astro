@@ -12,21 +12,17 @@ const project = projects.find((item) => item.slug === 'lorenz-visualization');
 ---
 
 <Layout metadata={metadata}>
-  <div class="max-w-6xl mx-auto px-4 py-10 md:py-14">
-    <section class="max-w-3xl mb-8">
-      <p class="text-sm text-muted dark:text-slate-400 mb-3">
+  <Fragment slot="footer"></Fragment>
+  <div class="w-full">
+    <div class="border-b border-gray-200 dark:border-slate-800 px-4 py-3 text-sm text-muted dark:text-slate-400">
+      <div class="max-w-7xl mx-auto">
         <a class="hover:underline" href={getPermalink('/projects')}>Project</a> / {project?.title ?? 'Lorenz 吸引子可视化'}
-      </p>
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">
-        {project?.title ?? 'Lorenz 吸引子可视化'}
-      </h1>
-      <p class="text-base md:text-lg leading-8 text-page dark:text-slate-200">
-        {project?.description ?? '一个用于观察 Lorenz 系统轨迹演化和混沌行为的交互式可视化页面。'}
-      </p>
-    </section>
-
-    <section class="rounded-md border border-gray-200 dark:border-slate-800 overflow-hidden">
-      <iframe title="Lorenz 吸引子可视化" srcdoc={lorenzVisualizationHtml} class="w-full h-[1500px] bg-white" />
-    </section>
+      </div>
+    </div>
+    <iframe
+      title="Lorenz 吸引子可视化"
+      srcdoc={lorenzVisualizationHtml}
+      class="block w-full h-[calc(100vh-121px)] min-h-[calc(100vh-121px)] bg-white"
+    />
   </div>
 </Layout>
