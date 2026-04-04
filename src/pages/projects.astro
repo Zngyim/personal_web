@@ -22,12 +22,6 @@ const metadata = {
         {
           projects.map((project) => (
             <li class="border-b border-gray-200 dark:border-slate-800 pb-8">
-              <a
-                class="block overflow-hidden rounded-md border border-gray-200 dark:border-slate-800 mb-4 bg-white dark:bg-slate-900"
-                href={getPermalink(`/projects/${project.slug}`)}
-              >
-                <img src={project.thumbnail} alt={`${project.title} 缩略图`} class="w-full aspect-[16/9] object-cover" loading="lazy" />
-              </a>
               <h2 class="text-2xl font-semibold text-page dark:text-white mb-2">
                 <a class="hover:underline" href={getPermalink(`/projects/${project.slug}`)}>{project.title}</a>
               </h2>
