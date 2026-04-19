@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>二维比例导引法仿真</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --grid: rgba(148, 163, 184, 0.12);
+      --missile: #38bdf8;
+      --target: #f97316;
+      --los: rgba(255, 255, 255, 0.25);
+      --trail-m: rgba(56, 189, 248, 0.8);
+      --trail-t: rgba(249, 115, 22, 0.8);
+      --accent: #22c55e;
+      --warn: #facc15;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top, #182544, var(--bg));
+      color: var(--text);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+    }
+
+    .sidebar {
+      padding: 20px;
+      background: rgba(17, 24, 39, 0.92);
+      border-right: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+
+    .desc,
+    .hint {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 14px;
+      background: rgba(31, 41, 55, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 12px;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 86px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      font-weight: 600;
+    }
+
+    button.secondary {
+      background: linear-gradient(135deg, #475569, #334155);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .stat .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat .value {
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .canvas-wrap {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(17, 24, 39, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: #0f172a;
+      background: var(--accent);
+    }
+
+    .badge.warning {
+      background: var(--warn);
+    }
+
+    canvas {
+      width: 100%;
+      height: calc(100vh - 92px);
+      min-height: 520px;
+      display: block;
+      background:
+        linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+        #020617;
+      background-size: 40px 40px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.03);
+    }
+
+    @media (max-width: 1024px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      }
+
+      canvas {
+        height: 68vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>二维比例导引法仿真</h1>
+      <p class="desc">
+        按文档中的二维平面比例导引思想，令导弹航向角满足
+        <strong>dθ/dt = K · dq/dt</strong>，目标做匀速直线运动，导弹保持速度大小近似不变，仅调整航向。
+      </p>
+
+      <div class="section">
+        <h2>参数设置</h2>
+        <div class="row">
+          <label for="gain">导航系数 K</label>
+          <input id="gain" type="number" value="3" step="0.1" min="0.1" />
+        </div>
+        <div class="row">
+          <label for="missileSpeed">导弹速度 Vm</label>
+          <input id="missileSpeed" type="number" value="320" step="10" />
+        </div>
+        <div class="row">
+          <label for="targetSpeed">目标速度 Vt</label>
+          <input id="targetSpeed" type="number" value="180" step="10" />
+        </div>
+        <div class="row">
+          <label for="targetHeading">目标航向角(度)</label>
+          <input id="targetHeading" type="number" value="165" step="1" />
+        </div>
+        <div class="row">
+          <label for="missileHeading">导弹初始航向(度)</label>
+          <input id="missileHeading" type="number" value="18" step="1" />
+        </div>
+        <div class="row">
+          <label for="timeStep">时间步长 dt</label>
+          <input id="timeStep" type="number" value="0.02" step="0.01" min="0.005" />
+        </div>
+        <div class="buttons">
+          <button id="toggleBtn">开始</button>
+          <button id="resetBtn" class="secondary">重置</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>实时状态</h2>
+        <div class="stats">
+          <div class="stat">
+            <span class="label">时间</span>
+            <span class="value" id="timeValue">0.00 s</span>
+          </div>
+          <div class="stat">
+            <span class="label">距离 r</span>
+            <span class="value" id="rangeValue">0.0</span>
+          </div>
+          <div class="stat">
+            <span class="label">视线角 q</span>
+            <span class="value" id="losValue">0.0°</span>
+          </div>
+          <div class="stat">
+            <span class="label">视线角速度 dq/dt</span>
+            <span class="value" id="losRateValue">0.0°/s</span>
+          </div>
+          <div class="stat">
+            <span class="label">导弹航向 θm</span>
+            <span class="value" id="headingValue">0.0°</span>
+          </div>
+          <div class="stat">
+            <span class="label">逼近速度 Vc</span>
+            <span class="value" id="closingValue">0.0</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="hint">
+        蓝色为导弹，橙色为目标，灰色虚线为当前视线。默认参数下通常可拦截，调小 K 或调高目标机动方向偏置可观察制导效果变化。
+      </p>
+    </aside>
+
+    <main class="canvas-wrap">
+      <div class="status-bar">
+        <span id="statusText">状态：待启动</span>
+        <span id="statusBadge" class="badge warning">等待运行</span>
+      </div>
+      <canvas id="simCanvas" width="1200" height="760"></canvas>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("simCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const ui = {
+      gain: document.getElementById("gain"),
+      missileSpeed: document.getElementById("missileSpeed"),
+      targetSpeed: document.getElementById("targetSpeed"),
+      targetHeading: document.getElementById("targetHeading"),
+      missileHeading: document.getElementById("missileHeading"),
+      timeStep: document.getElementById("timeStep"),
+      toggleBtn: document.getElementById("toggleBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      statusText: document.getElementById("statusText"),
+      statusBadge: document.getElementById("statusBadge"),
+      timeValue: document.getElementById("timeValue"),
+      rangeValue: document.getElementById("rangeValue"),
+      losValue: document.getElementById("losValue"),
+      losRateValue: document.getElementById("losRateValue"),
+      headingValue: document.getElementById("headingValue"),
+      closingValue: document.getElementById("closingValue"),
+    };
+
+    let animationId = null;
+    let running = false;
+    let simState = null;
+
+    function degToRad(deg) {
+      return (deg * Math.PI) / 180;
+    }
+
+    function radToDeg(rad) {
+      return (rad * 180) / Math.PI;
+    }
+
+    function wrapAngle(angle) {
+      let wrapped = angle;
+      while (wrapped > Math.PI) wrapped -= Math.PI * 2;
+      while (wrapped < -Math.PI) wrapped += Math.PI * 2;
+      return wrapped;
+    }
+
+    function getParams() {
+      return {
+        gain: Number(ui.gain.value),
+        missileSpeed: Number(ui.missileSpeed.value),
+        targetSpeed: Number(ui.targetSpeed.value),
+        targetHeading: degToRad(Number(ui.targetHeading.value)),
+        missileHeading: degToRad(Number(ui.missileHeading.value)),
+        dt: Number(ui.timeStep.value),
+      };
+    }
+
+    function initState() {
+      const params = getParams();
+      simState = {
+        params,
+        time: 0,
+        status: "idle",
+        missile: {
+          x: 120,
+          y: 110,
+          heading: params.missileHeading,
+          trail: [],
+        },
+        target: {
+          x: 920,
+          y: 520,
+          heading: params.targetHeading,
+          trail: [],
+        },
+        metrics: {
+          range: 0,
+          losAngle: 0,
+          losRate: 0,
+          closingSpeed: 0,
+        },
+      };
+
+      for (let i = 0; i < 2; i += 1) {
+        pushTrail(simState.missile.trail, simState.missile.x, simState.missile.y);
+        pushTrail(simState.target.trail, simState.target.x, simState.target.y);
+      }
+
+      updateMetrics();
+      updateStatus("待启动", "等待运行", true);
+      draw();
+    }
+
+    function pushTrail(trail, x, y) {
+      trail.push({ x, y });
+      if (trail.length > 800) {
+        trail.shift();
+      }
+    }
+
+    function updateMetrics() {
+      const { missile, target, params } = simState;
+      const dx = target.x - missile.x;
+      const dy = target.y - missile.y;
+      const range = Math.hypot(dx, dy);
+
+      const vmx = params.missileSpeed * Math.cos(missile.heading);
+      const vmy = params.missileSpeed * Math.sin(missile.heading);
+      const vtx = params.targetSpeed * Math.cos(target.heading);
+      const vty = params.targetSpeed * Math.sin(target.heading);
+
+      const rvx = vtx - vmx;
+      const rvy = vty - vmy;
+      const losAngle = Math.atan2(dy, dx);
+      const losRate = range > 1e-6 ? (dx * rvy - dy * rvx) / (range * range) : 0;
+      const closingSpeed = range > 1e-6 ? -((dx * rvx + dy * rvy) / range) : 0;
+
+      simState.metrics = { range, losAngle, losRate, closingSpeed };
+    }
+
+    function stepSimulation() {
+      const { missile, target, params, metrics } = simState;
+      const dt = params.dt;
+
+      const headingRate = params.gain * metrics.losRate;
+      missile.heading = wrapAngle(missile.heading + headingRate * dt);
+
+      missile.x += params.missileSpeed * Math.cos(missile.heading) * dt;
+      missile.y += params.missileSpeed * Math.sin(missile.heading) * dt;
+      target.x += params.targetSpeed * Math.cos(target.heading) * dt;
+      target.y += params.targetSpeed * Math.sin(target.heading) * dt;
+
+      simState.time += dt;
+      pushTrail(missile.trail, missile.x, missile.y);
+      pushTrail(target.trail, target.x, target.y);
+      updateMetrics();
+
+      if (simState.metrics.range < 12) {
+        simState.status = "hit";
+        stopSimulation();
+        updateStatus("导弹成功拦截目标", "拦截成功", false);
+      } else if (
+        simState.time > 30 ||
+        simState.metrics.closingSpeed < -5 ||
+        missile.x < -200 ||
+        missile.x > 1600 ||
+        missile.y < -200 ||
+        missile.y > 1200
+      ) {
+        simState.status = "miss";
+        stopSimulation();
+        updateStatus("本轮未完成拦截", "未拦截", true);
+      }
+    }
+
+    function drawTrail(trail, color) {
+      if (trail.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(trail[0].x, toCanvasY(trail[0].y));
+      for (let i = 1; i < trail.length; i += 1) {
+        ctx.lineTo(trail[i].x, toCanvasY(trail[i].y));
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function drawVehicle(entity, color, size) {
+      const x = entity.x;
+      const y = toCanvasY(entity.y);
+      const angle = -entity.heading;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(size, 0);
+      ctx.lineTo(-size * 0.7, size * 0.48);
+      ctx.lineTo(-size * 0.28, 0);
+      ctx.lineTo(-size * 0.7, -size * 0.48);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawAxes() {
+      ctx.save();
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.22)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(50, canvas.height - 50);
+      ctx.lineTo(canvas.width - 30, canvas.height - 50);
+      ctx.moveTo(50, canvas.height - 50);
+      ctx.lineTo(50, 30);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(148, 163, 184, 0.7)";
+      ctx.font = "12px Microsoft YaHei";
+      ctx.fillText("x", canvas.width - 20, canvas.height - 56);
+      ctx.fillText("y", 58, 24);
+      ctx.restore();
+    }
+
+    function drawLos() {
+      const { missile, target } = simState;
+      ctx.save();
+      ctx.setLineDash([8, 8]);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(missile.x, toCanvasY(missile.y));
+      ctx.lineTo(target.x, toCanvasY(target.y));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawInfoOverlay() {
+      const { missile, target, metrics, time } = simState;
+      ctx.save();
+      ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+      ctx.fillRect(canvas.width - 245, 18, 220, 126);
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.18)";
+      ctx.strokeRect(canvas.width - 245, 18, 220, 126);
+      ctx.fillStyle = "#e5e7eb";
+      ctx.font = "13px Microsoft YaHei";
+      const lines = [
+        `t = ${time.toFixed(2)} s`,
+        `r = ${metrics.range.toFixed(1)}`,
+        `q = ${radToDeg(metrics.losAngle).toFixed(1)} deg`,
+        `dq/dt = ${radToDeg(metrics.losRate).toFixed(2)} deg/s`,
+        `M = (${missile.x.toFixed(1)}, ${missile.y.toFixed(1)})`,
+        `T = (${target.x.toFixed(1)}, ${target.y.toFixed(1)})`,
+      ];
+      lines.forEach((line, index) => {
+        ctx.fillText(line, canvas.width - 228, 42 + index * 18);
+      });
+      ctx.restore();
+    }
+
+    function toCanvasY(y) {
+      return canvas.height - y;
+    }
+
+    function resizeCanvas() {
+      const displayWidth = canvas.clientWidth;
+      const displayHeight = canvas.clientHeight;
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+      }
+      draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawAxes();
+      drawTrail(simState.target.trail, "rgba(249, 115, 22, 0.85)");
+      drawTrail(simState.missile.trail, "rgba(56, 189, 248, 0.9)");
+      drawLos();
+      drawVehicle(simState.target, "#f97316", 12);
+      drawVehicle(simState.missile, "#38bdf8", 11);
+      drawInfoOverlay();
+      syncMetricsToUI();
+    }
+
+    function syncMetricsToUI() {
+      const { time, metrics, missile } = simState;
+      ui.timeValue.textContent = `${time.toFixed(2)} s`;
+      ui.rangeValue.textContent = metrics.range.toFixed(1);
+      ui.losValue.textContent = `${radToDeg(metrics.losAngle).toFixed(1)}°`;
+      ui.losRateValue.textContent = `${radToDeg(metrics.losRate).toFixed(2)}°/s`;
+      ui.headingValue.textContent = `${radToDeg(missile.heading).toFixed(1)}°`;
+      ui.closingValue.textContent = metrics.closingSpeed.toFixed(1);
+    }
+
+    function updateStatus(text, badge, warning) {
+      ui.statusText.textContent = `状态：${text}`;
+      ui.statusBadge.textContent = badge;
+      ui.statusBadge.className = warning ? "badge warning" : "badge";
+    }
+
+    function loop() {
+      stepSimulation();
+      draw();
+      if (running) {
+        animationId = requestAnimationFrame(loop);
+      }
+    }
+
+    function startSimulation() {
+      if (running) return;
+      running = true;
+      ui.toggleBtn.textContent = "暂停";
+      if (simState.status === "hit" || simState.status === "miss") {
+        initState();
+      }
+      simState.status = "running";
+      updateStatus("仿真运行中", "运行中", false);
+      animationId = requestAnimationFrame(loop);
+    }
+
+    function stopSimulation() {
+      running = false;
+      ui.toggleBtn.textContent = "开始";
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    ui.toggleBtn.addEventListener("click", () => {
+      if (running) {
+        stopSimulation();
+        updateStatus("仿真已暂停", "已暂停", true);
+      } else {
+        startSimulation();
+      }
+    });
+
+    ui.resetBtn.addEventListener("click", () => {
+      stopSimulation();
+      initState();
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    initState();
+    resizeCanvas();
+  </script>
+</body>
+</html>

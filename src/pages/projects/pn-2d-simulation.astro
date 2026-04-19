@@ -1,0 +1,28 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import { getPermalink } from '~/utils/permalinks';
+import pn2dSimulationHtml from '../../../pn_2d_simulation.html?raw';
+import { projects } from '~/data/projects';
+
+const metadata = {
+  title: '二维比例导引法仿真',
+};
+
+const project = projects.find((item) => item.slug === 'pn-2d-simulation');
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="footer"></Fragment>
+  <div class="w-full">
+    <div class="border-b border-gray-200 dark:border-slate-800 px-4 py-3 text-sm text-muted dark:text-slate-400">
+      <div class="max-w-7xl mx-auto">
+        <a class="hover:underline" href={getPermalink('/projects')}>Project</a> / {project?.title ?? '二维比例导引法仿真'}
+      </div>
+    </div>
+    <iframe
+      title="二维比例导引法仿真"
+      srcdoc={pn2dSimulationHtml}
+      class="block w-full h-[calc(100vh-121px)] min-h-[calc(100vh-121px)] bg-white"
+    />
+  </div>
+</Layout>
