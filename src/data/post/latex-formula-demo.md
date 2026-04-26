@@ -1,5 +1,6 @@
 ---
 publishDate: 2026-03-27T00:00:00Z
+draft: true
 title: LaTeX 公式示例：在博客中书写常见数学表达
 excerpt: 这是一篇用于测试数学公式渲染的示例文章，包含行内公式、块公式、矩阵、对齐公式与简单推导。
 category: 理论学习
