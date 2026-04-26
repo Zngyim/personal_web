@@ -14,6 +14,10 @@ author: Yiming Zeng
 
 每个数据（例如图片）都可以看做是一个高维度的向量。一个数据就是一个 data point，所有相关的数据构成了一个关于数据的概率分布 distribution，即 $p_{data}$，我们想做的事情就是把一个原始的概率分布（probability distribution） $p_{init}$ 转化为 $p_{data}$，从而能够通过采样的方式得到我们想要得到的数据。
 
+下面是一张示意图片：
+
+![Off-policy actor-critic based on importance sampling](/images/posts/diffusion-flow-matching/off-policy-actor-critic-importance-sampling.png)
+
 ## 核心概念
 
 - probability path
