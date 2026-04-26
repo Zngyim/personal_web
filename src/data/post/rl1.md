@@ -46,7 +46,8 @@ $$
 $$
 v_{k+1} = r_{\pi} + \gamma P_{\pi}v_{k},\quad k=0,1,2,\dots
 $$
-	即我们可以随便选取初始的 $v$ 然后通过不断迭代的方法，最终 $v$ 会收敛到真实的状态值。
+	
+即我们可以随便选取初始的 $v$ 然后通过不断迭代的方法，最终 $v$ 会收敛到真实的状态值。
 
 ## action value
 
@@ -120,7 +121,8 @@ policy iteration 也是一种求解最优策略的迭代方法，其思想在于
 $$
 v_{\pi_{k}} = r_{\pi_{k}} + \gamma P_{\pi_{k}}v_{\pi_{k}}
 $$
-	可以使用解析的方式，也可以使用迭代的方式。值得注意的是如果使用迭代的方式理论上要经过无数步才能收敛到真实的 state value，但实际上只会执行有限步，这在 [Truncated policy iteration](#truncated-policy-iteration) 中会有所体现
+	
+    可以使用解析的方式，也可以使用迭代的方式。值得注意的是如果使用迭代的方式理论上要经过无数步才能收敛到真实的 state value，但实际上只会执行有限步，这在 [Truncated policy iteration](#truncated-policy-iteration) 中会有所体现
 
 2. policy improvement
 	同样在得到了 state value 之后可以计算 action value，然后与 value iteration 一样进行策略更新。
