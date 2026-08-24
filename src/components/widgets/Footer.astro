@@ -32,22 +32,23 @@ const extraLinks: Array<Link> = [
 ].filter((item, index, array) => item.href && array.findIndex((entry) => entry.href === item.href) === index);
 ---
 
-<footer class:list={[{ dark: theme === 'dark' }, 'border-t border-gray-200 dark:border-slate-800 not-prose mt-16']}>
-  <div class="max-w-4xl mx-auto px-4 py-8 text-sm text-muted dark:text-slate-400">
-    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+<footer class:list={[{ dark: theme === 'dark' }, 'academic-footer not-prose']}>
+  <div class="academic-footer-inner">
+    <div class="academic-footer-row">
       <div>
-        <a class="font-semibold text-page dark:text-white hover:underline" href={getHomePermalink()}>{SITE?.name}</a>
-        {footNote && <span class="ml-2" set:html={footNote} />}
+        <a class="academic-footer-name" href={getHomePermalink()}>{SITE?.name}</a>
+        {footNote && <span class="academic-footer-note" set:html={footNote} />}
       </div>
-      <div class="flex flex-wrap gap-x-4 gap-y-1">
+      <nav class="academic-footer-links" aria-label="Footer navigation">
         {
           extraLinks.map(({ text, href, ariaLabel }) => (
-            <a class="hover:underline" href={href} aria-label={ariaLabel}>
+            <a href={href} aria-label={ariaLabel}>
               {text}
             </a>
           ))
         }
-      </div>
+      </nav>
     </div>
+    <p class="academic-footer-credit">Built with Astro · Inspired by the clarity of classic academic homepages.</p>
   </div>
 </footer>

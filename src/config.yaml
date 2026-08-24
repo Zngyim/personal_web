@@ -1,5 +1,5 @@
 site:
-  name: Yiming's Notes
+  name: Yiming
   site: 'https://example.com'
   base: '/'
   trailingSlash: false
@@ -9,9 +9,9 @@ site:
 # Default SEO metadata
 metadata:
   title:
-    default: Yiming's Notes
-    template: '%s | Yiming''s Notes'
-  description: '一个简洁的学术博客与个人研究主页，用于记录研究笔记、理论学习与日常思考。'
+    default: Yiming — Academic Homepage
+    template: '%s | Yiming'
+  description: 'Yiming 的学术主页：研究、项目与学习笔记。'
   robots:
     index: true
     follow: true
@@ -28,7 +28,7 @@ metadata:
     cardType: summary_large_image
 
 i18n:
-  language: zh-CN
+  language: en
   textDirection: ltr
 
 apps:
@@ -69,4 +69,4 @@ analytics:
       id: null # or "G-XXXXXXXXXX"
 
 ui:
-  theme: 'light' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"
+  theme: 'light:only' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"

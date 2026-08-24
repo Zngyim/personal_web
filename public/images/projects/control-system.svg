@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">Feedback control system</title>
+  <desc id="desc">A clean feedback control block diagram in cobalt, rust, and charcoal.</desc>
+  <rect width="640" height="400" fill="#f3f0e8"/>
+  <g stroke="#d8d1c4" stroke-width="1" opacity=".75">
+    <path d="M0 100h640M0 200h640M0 300h640"/>
+    <path d="M106 0v400M213 0v400M320 0v400M426 0v400M533 0v400"/>
+  </g>
+  <g fill="none" stroke="#1c1b18" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="118" cy="190" r="25" fill="#faf9f6"/>
+    <path d="M42 190h51m50 0h65m124 0h66m122 0h78"/>
+    <path d="m188 178 20 12-20 12m190-24 20 12-20 12m180-12-20-12m20 12-20 12"/>
+    <rect x="208" y="148" width="124" height="84" rx="6" fill="#e1e9f4" stroke="#174e8f"/>
+    <rect x="398" y="148" width="122" height="84" rx="6" fill="#f2e3de" stroke="#a74631"/>
+    <path d="M558 190v118H118v-93" stroke="#69716d"/>
+    <path d="m106 238 12-23 12 23" stroke="#69716d"/>
+  </g>
+  <text x="270" y="198" text-anchor="middle" fill="#174e8f" font-family="Georgia,serif" font-size="24">Controller</text>
+  <text x="459" y="198" text-anchor="middle" fill="#a74631" font-family="Georgia,serif" font-size="24">Plant</text>
+  <text x="108" y="183" text-anchor="middle" fill="#1c1b18" font-family="Georgia,serif" font-size="21">+</text>
+  <text x="123" y="211" text-anchor="middle" fill="#1c1b18" font-family="Georgia,serif" font-size="21">−</text>
+  <text x="34" y="48" fill="#1c1b18" font-family="Georgia,serif" font-size="20">r(t) → y(t)</text>
+  <text x="455" y="360" fill="#69716d" font-family="Arial,sans-serif" font-size="14" letter-spacing="2">FEEDBACK LOOP</text>
+</svg>

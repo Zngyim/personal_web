@@ -1,22 +1,50 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import { getBlogPermalink } from '~/utils/permalinks';
+import { profile, publications } from '~/data/academic-profile';
 
 const metadata = {
   title: 'Research',
+  description: `Research interests and publications by ${profile.name}.`,
 };
 ---
 
 <Layout metadata={metadata}>
-  <div class="max-w-3xl mx-auto px-4 min-h-[72vh] flex items-start justify-center pt-[18vh] pb-24 md:pt-[22vh] md:pb-32">
-    <section class="text-center">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-5">Research</h1>
-      <p class="text-base md:text-lg leading-8 text-muted dark:text-slate-400 max-w-2xl mx-auto">
-        Research interests and ongoing work will be added here in the future.
-      </p>
-      <p class="mt-8">
-        <a class="text-sm text-primary hover:underline" href={getBlogPermalink()}>Go to Blog</a>
-      </p>
-    </section>
+  <div class="academic-main">
+    <div class="academic-shell academic-subpage">
+      <header class="academic-subpage-header academic-reveal">
+        <p class="academic-kicker">Research archive</p>
+        <h1>Research</h1>
+        <p>{profile.researchStatement}</p>
+        <a class="academic-back-link" href="/#research">← Return to the homepage</a>
+      </header>
+
+      <section class="academic-section" aria-labelledby="publications-heading">
+        <header class="section-header">
+          <p>01</p>
+          <h2 id="publications-heading">Publications</h2>
+        </header>
+
+        {
+          publications.length > 0 ? (
+            <ol class="research-archive-list">
+              {publications.map((publication) => (
+                <li>
+                  <time>{publication.year}</time>
+                  <div>
+                    <h3>{publication.title}</h3>
+                    <p>{publication.authors}</p>
+                    <p>
+                      <em>{publication.venue}</em>
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="academic-empty">Publications and preprints will be listed here when available.</p>
+          )
+        }
+      </section>
+    </div>
   </div>
 </Layout>

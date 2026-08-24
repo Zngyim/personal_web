@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">Proportional navigation guidance</title>
+  <desc id="desc">A diagram of a curved interceptor path converging on a target trajectory.</desc>
+  <rect width="640" height="400" fill="#eef2f1"/>
+  <g stroke="#cbd4d1" stroke-width="1">
+    <path d="M0 100h640M0 200h640M0 300h640"/>
+    <path d="M106 0v400M213 0v400M320 0v400M426 0v400M533 0v400"/>
+  </g>
+  <path d="M70 318C177 335 218 288 281 212c59-70 128-107 273-120" fill="none" stroke="#194f8f" stroke-width="8" stroke-linecap="round"/>
+  <path d="M134 84 554 92" fill="none" stroke="#b24831" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 12"/>
+  <path d="m539 73 31 19-32 18" fill="none" stroke="#b24831" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m57 304 40 17-35 27Z" fill="#194f8f"/>
+  <path d="M282 212 440 90" fill="none" stroke="#6c7a76" stroke-width="2" stroke-dasharray="7 7"/>
+  <path d="M282 212a66 66 0 0 1 52-28" fill="none" stroke="#171815" stroke-width="2"/>
+  <text x="320" y="176" fill="#171815" font-family="Georgia,serif" font-size="20">λ</text>
+  <text x="30" y="46" fill="#171815" font-family="Georgia,serif" font-size="20">N · λ̇</text>
+  <text x="488" y="362" fill="#66716e" font-family="Arial,sans-serif" font-size="14" letter-spacing="2">GUIDANCE</text>
+</svg>

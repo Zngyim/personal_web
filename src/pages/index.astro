@@ -1,52 +1,241 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import { findLatestPosts } from '~/utils/blog';
-import { getBlogPermalink, getPermalink } from '~/utils/permalinks';
-import { getFormattedDate } from '~/utils/utils';
+import { appointments, education, news, profile, publications } from '~/data/academic-profile';
+import { Icon } from 'astro-icon/components';
 
 const metadata = {
-  title: 'Home',
+  title: `${profile.name} — Academic Homepage`,
+  description: `Academic homepage of ${profile.name}: research, publications, and background.`,
   ignoreTitleTemplate: true,
 };
 
-const posts = await findLatestPosts({ count: 5 });
+const hasTimeline = appointments.length > 0 || education.length > 0;
 ---
 
 <Layout metadata={metadata}>
-  <div class="max-w-3xl mx-auto px-4 py-10 md:py-14">
-    <section class="mb-12">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-page dark:text-white mb-4">Hi, I'm Yiming</h1>
-      <p class="text-base md:text-lg leading-8 text-muted dark:text-slate-400">这里记录我的学习、思考与研究笔记</p>
-    </section>
-
-    <section class="border-t border-gray-200 dark:border-slate-800 pt-8">
-      <div class="flex items-center justify-between gap-4 mb-5">
-        <h2 class="text-2xl font-semibold text-page dark:text-white">Latest Posts</h2>
-        <a class="text-sm text-primary hover:underline whitespace-nowrap" href={getBlogPermalink()}>View all posts</a>
-      </div>
-      <ul class="space-y-6">
-        {
-          posts.map((post) => (
-            <li class="pb-6 border-b border-gray-100 last:border-b-0 dark:border-slate-800">
-              <div class="text-sm text-muted dark:text-slate-400 mb-1">
-                {getFormattedDate(post.publishDate)}
-                {post.category && (
-                  <>
-                    {' '}
-                    · <a class="hover:underline" href={getPermalink(post.category.slug, 'category')}>{post.category.title}</a>
-                  </>
-                )}
+  <div class="academic-main">
+    <div class="academic-shell">
+      <section id="about" class="profile-hero" aria-labelledby="profile-name">
+        <div class="portrait-column academic-reveal" style="--reveal-order: 1">
+          {
+            profile.portrait ? (
+              <img class="portrait-image" src={profile.portrait} alt={profile.portraitAlt} width="420" height="520" />
+            ) : (
+              <div class="portrait-placeholder" role="img" aria-label="Portrait placeholder">
+                <span aria-hidden="true">{profile.name.slice(0, 1)}</span>
+                <small>Portrait</small>
               </div>
-              <h3 class="text-xl font-semibold text-page dark:text-white mb-2">
-                <a class="hover:underline" href={getPermalink(post.permalink, 'post')}>
-                  {post.title}
-                </a>
-              </h3>
-              {post.excerpt && <p class="text-base leading-7 text-muted dark:text-slate-400">{post.excerpt}</p>}
-            </li>
-          ))
+            )
+          }
+        </div>
+
+        <div class="profile-copy academic-reveal" style="--reveal-order: 2">
+          <h1 id="profile-name">
+            {profile.name}
+            {profile.nativeName && <span>{profile.nativeName}</span>}
+          </h1>
+
+          {
+            (profile.role || profile.affiliation) && (
+              <p class="profile-role">
+                {profile.role}
+                {profile.role && profile.affiliation && <span aria-hidden="true"> · </span>}
+                {profile.affiliation}
+              </p>
+            )
+          }
+
+          <div class="profile-introduction">
+            {profile.introduction.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+
+          {profile.location && <p class="profile-location">Based in {profile.location}</p>}
+
+          {
+            profile.links.length > 0 && (
+              <nav class="profile-links" aria-label="Contact links">
+                <ul>
+                  {profile.links.map((link) => (
+                    <li class="profile-link-item">
+                      {link.href ? (
+                        <a
+                          class="profile-contact"
+                          href={link.href}
+                          target={link.href.startsWith('http') ? '_blank' : undefined}
+                          rel={link.href.startsWith('http') ? 'noreferrer' : undefined}
+                        >
+                          <Icon name={link.icon} aria-hidden="true" />
+                          <span>{link.label}</span>
+                        </a>
+                      ) : (
+                        <span class="profile-contact profile-contact-pending" title={`${link.label} link coming soon`}>
+                          <Icon name={link.icon} aria-hidden="true" />
+                          <span>{link.label}</span>
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )
+          }
+        </div>
+      </section>
+
+      <section
+        id="news"
+        class="academic-section academic-reveal"
+        style="--reveal-order: 3"
+        aria-labelledby="news-heading"
+      >
+        <header class="section-header">
+          <h2 id="news-heading">News</h2>
+        </header>
+
+        {
+          news.length > 0 ? (
+            <ol class="news-list">
+              {news.map((item) => (
+                <li>
+                  <time>{item.date}</time>
+                  <p>
+                    {item.text}{' '}
+                    {item.href && (
+                      <a href={item.href}>
+                        {item.linkLabel || 'Read more'} <span aria-hidden="true">↗</span>
+                      </a>
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="academic-empty">Updates, talks, and milestones will appear here.</p>
+          )
         }
-      </ul>
-    </section>
+      </section>
+
+      <section
+        id="research"
+        class="academic-section academic-reveal"
+        style="--reveal-order: 4"
+        aria-labelledby="research-heading"
+      >
+        <header class="section-header">
+          <h2 id="research-heading">Research</h2>
+        </header>
+
+        <div class="research-intro">
+          <p>{profile.researchStatement}</p>
+          {
+            profile.interests.length > 0 && (
+              <ul class="interest-list" aria-label="Research interests">
+                {profile.interests.map((interest) => (
+                  <li>{interest}</li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+
+        <div class="subsection-heading">
+          <h3>Selected publications</h3>
+          <span>{publications.length > 0 ? `${publications.length} selected` : 'Awaiting entries'}</span>
+        </div>
+
+        {
+          publications.length > 0 ? (
+            <div class="publication-list">
+              {publications.map((publication) => (
+                <article class:list={['publication-row', { highlighted: publication.highlighted }]}>
+                  <div class="publication-media">
+                    {publication.image ? (
+                      <img src={publication.image} alt="" loading="lazy" />
+                    ) : (
+                      <span aria-hidden="true">{publication.year}</span>
+                    )}
+                  </div>
+                  <div class="publication-copy">
+                    <h4>{publication.title}</h4>
+                    <p>{publication.authors}</p>
+                    <p class="publication-venue">
+                      <em>{publication.venue}</em>, {publication.year}
+                    </p>
+                    {publication.description && <p class="publication-description">{publication.description}</p>}
+                    {publication.links && publication.links.length > 0 && (
+                      <nav aria-label={`Links for ${publication.title}`}>
+                        {publication.links.map((link, index) => (
+                          <>
+                            {index > 0 && <span aria-hidden="true">/</span>}
+                            <a href={link.href}>{link.label}</a>
+                          </>
+                        ))}
+                      </nav>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div class="publication-empty">
+              <span aria-hidden="true">∅</span>
+              <div>
+                <strong>No publications listed yet</strong>
+                <p>Preprints, papers, and project links can be added when ready.</p>
+              </div>
+            </div>
+          )
+        }
+      </section>
+
+      <section class="academic-section academic-reveal" style="--reveal-order: 5" aria-labelledby="background-heading">
+        <header class="section-header">
+          <h2 id="background-heading">Background</h2>
+        </header>
+
+        {
+          hasTimeline ? (
+            <div class="background-grid">
+              {appointments.length > 0 && (
+                <div>
+                  <h3>Appointments</h3>
+                  <ol class="timeline-list">
+                    {appointments.map((item) => (
+                      <li>
+                        <time>{item.period}</time>
+                        <div>
+                          <strong>{item.title}</strong>
+                          {item.organization && <p>{item.organization}</p>}
+                          {item.description && <p>{item.description}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {education.length > 0 && (
+                <div>
+                  <h3>Education</h3>
+                  <ol class="timeline-list">
+                    {education.map((item) => (
+                      <li>
+                        <time>{item.period}</time>
+                        <div>
+                          <strong>{item.title}</strong>
+                          {item.organization && <p>{item.organization}</p>}
+                          {item.description && <p>{item.description}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p class="academic-empty">Appointments and education will be added here.</p>
+          )
+        }
+      </section>
+    </div>
   </div>
 </Layout>

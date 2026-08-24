@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">Lorenz attractor</title>
+  <desc id="desc">A cobalt and rust colored double-lobed Lorenz attractor on a warm grid.</desc>
+  <rect width="640" height="400" fill="#f4f0e8"/>
+  <g stroke="#d8d1c4" stroke-width="1" opacity=".7">
+    <path d="M0 80h640M0 160h640M0 240h640M0 320h640"/>
+    <path d="M80 0v400M160 0v400M240 0v400M320 0v400M400 0v400M480 0v400M560 0v400"/>
+  </g>
+  <path d="M321 208C287 177 227 112 159 122c-80 12-84 118-22 151 60 32 156-10 167-79 10-63-74-93-130-45-47 41-26 119 44 131 68 12 105-41 104-71Z" fill="none" stroke="#184e9e" stroke-width="6" stroke-linecap="round"/>
+  <path d="M319 208c35-32 95-97 163-86 80 12 84 118 22 151-60 32-156-10-167-79-10-63 74-93 130-45 47 41 26 119-44 131-68 12-105-41-104-72Z" fill="none" stroke="#b34a2e" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="320" cy="208" r="7" fill="#191814"/>
+  <text x="28" y="46" fill="#191814" font-family="Georgia,serif" font-size="20">x(t)</text>
+  <text x="546" y="366" fill="#6f6a61" font-family="Arial,sans-serif" font-size="14" letter-spacing="2">LORENZ</text>
+</svg>
