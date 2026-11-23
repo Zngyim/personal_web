@@ -14,34 +14,64 @@ const { items = publications } = Astro.props;
       <div class="papers">
         {items.map((paper) => {
           const titleLink =
-            paper.links?.find((link) => /^(paper|pdf)$/i.test(link.label))?.href || paper.links?.[0]?.href;
+            paper.links?.find((link) => /^(paper|pdf|arxiv)$/i.test(link.label))?.href || paper.links?.[0]?.href;
+          const previewLink = paper.links?.find((link) => /^project$/i.test(link.label))?.href || titleLink;
           return (
             <article class:list={['paper', { 'paper-featured': paper.highlighted }]}>
-              <div class="paper-preview">
+              <div class:list={['paper-preview', { 'paper-preview-empty': !paper.image }]}>
                 {paper.image ? (
-                  <img src={paper.image} alt="" loading="lazy" decoding="async" width="160" height="120" />
+                  <a href={previewLink} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={paper.image}
+                      alt={paper.imageAlt || `${paper.title} preview`}
+                      loading="lazy"
+                      decoding="async"
+                      width={paper.imageWidth || 160}
+                      height={paper.imageHeight || 120}
+                    />
+                  </a>
                 ) : (
                   <Icon name="tabler:file-text" aria-hidden="true" />
                 )}
               </div>
               <div class="paper-copy">
-                <h3>{titleLink ? <a href={titleLink}>{paper.title}</a> : paper.title}</h3>
+                <h3>
+                  {titleLink ? (
+                    <a href={titleLink} target="_blank" rel="noopener noreferrer">
+                      {paper.title}
+                    </a>
+                  ) : (
+                    paper.title
+                  )}
+                </h3>
                 <p class="paper-authors">
-                  {paper.authors.split(profile.name).map((part, index) => (
-                    <>
-                      {index > 0 && <strong>{profile.name}</strong>}
-                      {part}
-                    </>
-                  ))}
+                  {paper.authors.split(',').map((author, index) => {
+                    const markers = author.trim().match(/[*†‡]+$/)?.[0] || '';
+                    const name = author.trim().slice(0, author.trim().length - markers.length);
+                    const note = [...markers]
+                      .map((marker) => paper.authorNotes?.[marker])
+                      .filter(Boolean)
+                      .join('; ');
+                    return (
+                      <>
+                        {index > 0 && ', '}
+                        {name === profile.name ? <strong>{name}</strong> : name}
+                        {markers && <sup title={note || undefined} aria-label={note || undefined} set:text={markers} />}
+                      </>
+                    );
+                  })}
                 </p>
                 <p class="paper-venue">
-                  <em>{paper.venue}</em>, {paper.year}
+                  <strong>{paper.venue}</strong>
+                  <span class="paper-year"> · {paper.year}</span>
                 </p>
                 {paper.description && <p class="paper-description">{paper.description}</p>}
                 {paper.links && paper.links.length > 0 && (
                   <nav class="paper-links" aria-label={`Resources for ${paper.title}`}>
                     {paper.links.map((link) => (
-                      <a href={link.href}>{link.label}</a>
+                      <a href={link.href} target="_blank" rel="noopener noreferrer">
+                        {link.label}
+                      </a>
                     ))}
                   </nav>
                 )}
@@ -59,9 +89,9 @@ const { items = publications } = Astro.props;
 <style>
   .paper {
     display: grid;
-    grid-template-columns: 10rem minmax(0, 1fr);
+    grid-template-columns: 12.5rem minmax(0, 1fr);
     align-items: start;
-    gap: 1.5rem;
+    gap: 1.25rem;
     padding: 1.25rem 0;
   }
   .paper + .paper {
@@ -72,17 +102,25 @@ const { items = publications } = Astro.props;
     background: rgb(71 96 79 / 4%);
   }
   .paper-preview {
+    overflow: hidden;
+    border: 1px solid rgb(25 24 20 / 12%);
+    border-radius: 5px;
+    background: #fff;
+  }
+  .paper-preview-empty {
     display: grid;
     aspect-ratio: 4 / 3;
     place-items: center;
-    overflow: hidden;
     background: rgb(71 96 79 / 4%);
     color: var(--aw-color-text-muted);
   }
   .paper-preview img {
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
+  }
+  .paper-preview a {
+    display: block;
   }
   .paper-preview :global(svg) {
     width: 1.5rem;
@@ -96,10 +134,10 @@ const { items = publications } = Astro.props;
   }
   .paper-copy h3 {
     color: var(--aw-color-text-heading);
-    font-family: var(--aw-font-serif);
-    font-size: 1.05rem;
+    font-family: var(--aw-font-sans);
+    font-size: 0.97rem;
     font-weight: 600;
-    line-height: 1.4;
+    line-height: 1.5;
   }
   .paper-copy a {
     color: var(--aw-color-primary);
@@ -107,6 +145,40 @@ const { items = publications } = Astro.props;
   }
   .paper-copy a:hover {
     text-decoration: underline;
+  }
+  .paper-copy h3 a {
+    color: inherit;
+  }
+  .paper-copy h3 a:hover {
+    color: var(--aw-color-primary);
+    text-decoration: none;
+  }
+  .paper-authors {
+    color: var(--aw-color-text-muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  .paper-authors strong {
+    color: var(--aw-color-text-heading);
+    font-weight: 600;
+    text-decoration: underline dotted;
+    text-underline-offset: 0.2em;
+  }
+  .paper-authors sup {
+    position: static;
+    font-size: 0.7em;
+    line-height: 0;
+    vertical-align: super;
+  }
+  .paper-venue {
+    font-size: 0.82rem;
+  }
+  .paper-venue strong {
+    color: var(--aw-color-text-heading);
+    font-weight: 600;
+  }
+  .paper-year {
+    color: var(--aw-color-text-muted);
   }
   .paper-authors,
   .paper-venue,
@@ -119,18 +191,31 @@ const { items = publications } = Astro.props;
   .paper-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem 1rem;
+    gap: 0.4rem;
     margin-top: 0.65rem;
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+  .paper-links a {
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgb(25 24 20 / 17%);
+    border-radius: 3px;
+    color: var(--aw-color-text-muted);
+    background: #fff;
+    transition:
+      color 150ms ease,
+      border-color 150ms ease;
+  }
+  .paper-links a:hover,
+  .paper-links a:focus-visible {
+    border-color: var(--aw-color-primary);
+    color: var(--aw-color-primary);
+    text-decoration: none;
   }
   @media (max-width: 600px) {
     .paper {
       grid-template-columns: 1fr;
       gap: 1rem;
-    }
-    .paper-preview {
-      max-width: 12rem;
     }
   }
 </style>

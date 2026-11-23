@@ -21,10 +21,14 @@ export interface PublicationLink {
 export interface PublicationItem {
   title: string;
   authors: string;
+  authorNotes?: Record<string, string>;
   venue: string;
   year: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   highlighted?: boolean;
   links?: PublicationLink[];
 }
@@ -86,7 +90,45 @@ export const profile = {
 
 export const news: NewsItem[] = [];
 
-export const publications: PublicationItem[] = [];
+export const publications: PublicationItem[] = [
+  {
+    title: 'EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand–Object Affordances',
+    authors:
+      'Yiming Zeng*†, Jiangyuxuan Dai*, Yuheng Na*†, TAN ZHU XUAN, Zihan Lin, Xinfang Qi, Shijian Zhang, Chengqi Shi, Yihan Kuang, Zhide Zhong, Junjie He, Junfeng Li, Zimu Han, Naipeng Li‡, Haoang Li‡',
+    authorNotes: { '*': 'Equal contribution', '†': 'Project lead', '‡': 'Corresponding author' },
+    venue: 'In Submission',
+    year: '2026',
+    image: '/images/publications/egoloaf.jpg',
+    imageAlt: 'EgoLoAF project preview',
+    imageWidth: 760,
+    imageHeight: 427,
+    links: [
+      { label: 'Project', href: 'https://egoloaf.github.io/' },
+      { label: 'Paper', href: 'https://egoloaf.github.io/assets/EgoLoAF.pdf' },
+      { label: 'Video', href: 'https://egoloaf.github.io/#film' },
+    ],
+  },
+  {
+    title:
+      'HIL-UMI: Bringing Human-in-the-Loop Post-Training of Vision-Language-Action Models to Universal Manipulation Interface',
+    authors:
+      'Zimu Han*, Yiming Zeng*, Jiyao Zhang*, Zihao Zhao, Yuanfei Wang, Yixiang Jin, Shiqi Li, Shuangben Chen, Wei Huang, Ruodai Li, Hui Shen, Hao Dong',
+    authorNotes: { '*': 'Equal contribution' },
+    venue: 'In Submission',
+    year: '2026',
+    image: '/images/publications/hil-umi.png',
+    imageAlt: 'HIL-UMI overview of robot-free human-in-the-loop VLA post-training',
+    imageWidth: 1200,
+    imageHeight: 423,
+    links: [
+      { label: 'Project', href: 'https://hil-umi.github.io/' },
+      { label: 'arXiv', href: 'https://arxiv.org/abs/2609.20659' },
+      { label: 'Code', href: 'https://github.com/HIL-UMI/HIL-UMI-Official' },
+      { label: '42号电波', href: 'https://mp.weixin.qq.com/s/yC5ygF12XZ00yEZi7wFXTQ' },
+      { label: '启元研究院', href: 'https://mp.weixin.qq.com/s/qUFbJ8jradZsEUk2Y5JpaQ' },
+    ],
+  },
+];
 
 export const honors: HonorItem[] = [];
 
