@@ -1,0 +1,106 @@
+---
+import { Icon } from 'astro-icon/components';
+import { outsideResearch } from '~/data/academic-profile';
+---
+
+<section id="outside-research" class="academic-section" aria-labelledby="outside-research-heading">
+  <header class="section-header">
+    <h2 id="outside-research-heading">Outside Research</h2>
+  </header>
+
+  <p class="landscape-introduction">{outsideResearch.introduction}</p>
+
+  {
+    outsideResearch.photos.length > 0 ? (
+      <div class="landscape-gallery">
+        {outsideResearch.photos.map((photo) => (
+          <figure>
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              loading="lazy"
+              decoding="async"
+            />
+            {photo.caption && <figcaption>{photo.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    ) : (
+      <>
+        <div class="landscape-gallery" aria-hidden="true">
+          {Array.from({ length: 3 }, () => (
+            <div class="landscape-placeholder">
+              <Icon name="tabler:photo" />
+            </div>
+          ))}
+        </div>
+        <p class="landscape-coming-soon">A few favorite views, coming soon.</p>
+      </>
+    )
+  }
+</section>
+
+<style>
+  .landscape-introduction {
+    margin-bottom: 1.25rem;
+    color: var(--aw-color-text-default);
+    font-family: var(--aw-font-sans);
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+
+  .landscape-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .landscape-gallery figure {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .landscape-gallery img,
+  .landscape-placeholder {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: 3px;
+  }
+
+  .landscape-gallery img {
+    display: block;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .landscape-placeholder {
+    display: grid;
+    place-items: center;
+    border: 1px solid rgb(71 96 79 / 8%);
+    background: rgb(71 96 79 / 3%);
+    color: rgb(71 96 79 / 35%);
+  }
+
+  .landscape-placeholder :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 1.1;
+  }
+
+  .landscape-gallery figcaption,
+  .landscape-coming-soon {
+    margin-top: 0.65rem;
+    color: var(--aw-color-text-muted);
+    font-family: var(--aw-font-sans);
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    .landscape-gallery {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,177 @@
+---
+import { appointments, education, type TimelineItem } from '~/data/academic-profile';
+interface Props {
+  educationItems?: TimelineItem[];
+  appointmentItems?: TimelineItem[];
+}
+const { educationItems = education, appointmentItems = appointments } = Astro.props;
+const groups = [
+  { kind: 'education', title: 'Education', items: educationItems, empty: 'Education details coming soon.' },
+  {
+    kind: 'research',
+    title: 'Research Experience',
+    items: appointmentItems,
+    empty: 'Research experience and internships coming soon.',
+  },
+];
+---
+
+<section id="experience" class="academic-section" aria-labelledby="experience-heading">
+  <header class="section-header"><h2 id="experience-heading">Experience</h2></header>
+  <div class="experience-groups">
+    {
+      groups.map((group) => (
+        <div class:list={['experience-group', { 'experience-education': group.kind === 'education' }]}>
+          <h3>{group.title}</h3>
+          {group.items.length > 0 ? (
+            <ol class="experience-list">
+              {group.items.map((item) => (
+                <li class:list={{ 'has-logo': Boolean(item.logo) }}>
+                  <span class="experience-period">
+                    {item.period.split(' – ').map((date, index) => (
+                      <>
+                        {index > 0 && <span>–</span>}
+                        <span>{date}</span>
+                      </>
+                    ))}
+                  </span>
+                  {item.logo && (
+                    <img class="experience-logo" src={item.logo} alt="" width="176" height="64" loading="lazy" />
+                  )}
+                  <div class="experience-copy">
+                    <h4>
+                      {item.organizationHref ? (
+                        <a href={item.organizationHref} target="_blank" rel="noreferrer">
+                          {item.organization || item.title}
+                        </a>
+                      ) : (
+                        item.organization || item.title
+                      )}
+                    </h4>
+                    {(item.unit || item.advisor) && (
+                      <p class="experience-unit">
+                        {item.unit}
+                        {item.unit && item.advisor && ' · '}
+                        {item.advisor && (
+                          <span class="experience-advisor">
+                            Advised by{' '}
+                            <a href={item.advisor.href} target="_blank" rel="noreferrer">
+                              {item.advisor.name}
+                            </a>
+                          </span>
+                        )}
+                      </p>
+                    )}
+                    {item.organization && <p class="experience-role">{item.title}</p>}
+                    {item.description && <p class="experience-description">{item.description}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="academic-empty">{group.empty}</p>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .experience-groups {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .experience-group h3 {
+    margin-bottom: 0.75rem;
+    color: var(--aw-color-text-heading);
+    font-family: var(--aw-font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+  .experience-list li {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    grid-template-areas: 'period copy';
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem 0;
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+  .experience-list li.has-logo {
+    grid-template-columns: 4rem 11rem minmax(0, 1fr);
+    grid-template-areas: 'period logo copy';
+  }
+  .experience-list li + li {
+    border-top: 1px solid rgb(25 24 20 / 10%);
+  }
+  .experience-period {
+    grid-area: period;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .experience-logo {
+    grid-area: logo;
+    width: 11rem;
+    height: 4rem;
+    object-fit: contain;
+  }
+  .experience-copy {
+    grid-area: copy;
+    min-width: 0;
+  }
+  .experience-copy h4 {
+    color: var(--aw-color-text-heading);
+    font-weight: 600;
+  }
+  .experience-copy a {
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+  }
+  .experience-copy a:hover {
+    color: var(--aw-color-primary);
+    text-decoration: underline;
+  }
+  .experience-period,
+  .experience-unit,
+  .experience-advisor,
+  .experience-description {
+    color: var(--aw-color-text-muted);
+    font-size: 0.8rem;
+  }
+  .experience-education .experience-role {
+    color: var(--aw-color-text-muted);
+    font-style: italic;
+  }
+  .experience-advisor a {
+    color: var(--aw-color-primary);
+  }
+  .experience-list p {
+    margin-top: 0.2rem;
+  }
+  @media (max-width: 600px) {
+    .experience-list li {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'period' 'copy';
+      gap: 0.75rem 1rem;
+    }
+    .experience-list li.has-logo {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'logo period' 'copy copy';
+    }
+    .experience-period {
+      flex-direction: row;
+      gap: 0.35rem;
+    }
+    .experience-logo {
+      width: min(100%, 9rem);
+      height: 3.25rem;
+      object-position: left center;
+    }
+  }
+</style>

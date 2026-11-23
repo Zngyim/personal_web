@@ -1,0 +1,28 @@
+---
+import type { NewsItem } from '~/data/academic-profile';
+interface Props {
+  items: NewsItem[];
+}
+const { items } = Astro.props;
+---
+
+<ol class="news-list">
+  {
+    items.map((item) => (
+      <li>
+        <time datetime={item.dateTime}>{item.date}</time>
+        <p>
+          {item.text}
+          {item.href && (
+            <>
+              {' '}
+              <a href={item.href}>
+                {item.linkLabel || 'Read more'} <span aria-hidden="true">↗</span>
+              </a>
+            </>
+          )}
+        </p>
+      </li>
+    ))
+  }
+</ol>

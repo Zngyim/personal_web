@@ -1,0 +1,57 @@
+---
+import { honors, type HonorItem } from '~/data/academic-profile';
+interface Props {
+  items?: HonorItem[];
+}
+const { items = honors } = Astro.props;
+---
+
+<section id="honors" class="academic-section" aria-labelledby="honors-heading">
+  <header class="section-header"><h2 id="honors-heading">Honors &amp; Awards</h2></header>
+  {
+    items.length > 0 ? (
+      <ol class="honors-list">
+        {items.map((honor) => (
+          <li>
+            <time>{honor.year}</time>
+            <div>
+              <strong>{honor.title}</strong>
+              {honor.organization && <p>{honor.organization}</p>}
+              {honor.description && <p>{honor.description}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="academic-empty">Honors and awards will be added here.</p>
+    )
+  }
+</section>
+
+<style>
+  .honors-list li {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+  .honors-list li + li {
+    border-top: 1px solid rgb(25 24 20 / 10%);
+  }
+  .honors-list time,
+  .honors-list p {
+    color: var(--aw-color-text-muted);
+    font-size: 0.8rem;
+  }
+  .honors-list p {
+    margin-top: 0.2rem;
+  }
+  @media (max-width: 520px) {
+    .honors-list li {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+</style>

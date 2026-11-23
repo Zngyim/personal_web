@@ -1,0 +1,117 @@
+---
+import { Icon } from 'astro-icon/components';
+import { profile } from '~/data/academic-profile';
+---
+
+<section id="about" class="profile-hero" aria-labelledby="about-heading">
+  <div class="portrait-column">
+    {
+      profile.portrait ? (
+        <img class="portrait-image" src={profile.portrait} alt={profile.portraitAlt} width="1024" height="1440" />
+      ) : (
+        <div class="portrait-placeholder" role="img" aria-label="Portrait placeholder">
+          <>
+            <span aria-hidden="true">{profile.name.slice(0, 1)}</span>
+            <small>Portrait</small>
+          </>
+        </div>
+      )
+    }
+  </div>
+  <div class="profile-copy">
+    <h1 id="profile-name">{profile.name}{profile.nativeName && <span>{profile.nativeName}</span>}</h1>
+    {
+      (profile.role || profile.affiliation) && (
+        <p class="profile-role">
+          {profile.role}
+          {profile.role && profile.affiliation && <span aria-hidden="true"> · </span>}
+          {profile.affiliation}
+        </p>
+      )
+    }
+    <h2 id="about-heading" class="about-heading">About Me</h2>
+    <div class="profile-introduction">
+      {
+        profile.introduction.length > 0 || profile.researchStatement ? (
+          <>
+            {profile.introduction.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+            {profile.researchStatement && <p>{profile.researchStatement}</p>}
+          </>
+        ) : (
+          <p class="academic-empty">Biography and research interests coming soon.</p>
+        )
+      }
+    </div>
+    {
+      profile.interests.length > 0 && (
+        <ul class="interest-list" aria-label="Research interests">
+          {profile.interests.map((interest) => (
+            <li>{interest}</li>
+          ))}
+        </ul>
+      )
+    }
+    {profile.location && <p class="profile-location">Based in {profile.location}</p>}
+    {
+      profile.links.length > 0 && (
+        <nav class="profile-links" aria-label="Contact links and CV">
+          <ul>
+            {profile.links.map((link) => (
+              <li class="profile-link-item">
+                {link.href ? (
+                  <a
+                    class="profile-contact"
+                    href={link.href}
+                    title={link.href.startsWith('mailto:') ? link.href.slice(7) : undefined}
+                    target={link.href.startsWith('http') || link.href.endsWith('.pdf') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') || link.href.endsWith('.pdf') ? 'noreferrer' : undefined}
+                  >
+                    <Icon name={link.icon} aria-hidden="true" />
+                    <span>{link.label}</span>
+                  </a>
+                ) : link.value ? (
+                  <span
+                    class="profile-contact profile-contact-static"
+                    title={link.value}
+                    aria-label={`${link.label}: ${link.value}`}
+                  >
+                    <Icon name={link.icon} aria-hidden="true" />
+                    <span>{link.label}</span>
+                  </span>
+                ) : (
+                  <span class="profile-contact profile-contact-pending" title={`${link.label} link coming soon`}>
+                    <Icon name={link.icon} aria-hidden="true" />
+                    <span>{link.label}</span>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .about-heading {
+    margin-top: 1.5rem;
+    color: var(--aw-color-text-heading);
+    font-family: var(--aw-font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .profile-introduction {
+    margin-top: 0.6rem;
+  }
+
+  .profile-contact-static,
+  .profile-contact-static:hover {
+    color: var(--aw-color-text-default);
+    text-decoration: none;
+    user-select: text;
+  }
+</style>

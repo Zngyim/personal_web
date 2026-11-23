@@ -1,0 +1,136 @@
+---
+import { Icon } from 'astro-icon/components';
+import { profile, publications, type PublicationItem } from '~/data/academic-profile';
+interface Props {
+  items?: PublicationItem[];
+}
+const { items = publications } = Astro.props;
+---
+
+<section id="publications" class="academic-section" aria-labelledby="publications-heading">
+  <header class="section-header"><h2 id="publications-heading">Publications</h2></header>
+  {
+    items.length > 0 ? (
+      <div class="papers">
+        {items.map((paper) => {
+          const titleLink =
+            paper.links?.find((link) => /^(paper|pdf)$/i.test(link.label))?.href || paper.links?.[0]?.href;
+          return (
+            <article class:list={['paper', { 'paper-featured': paper.highlighted }]}>
+              <div class="paper-preview">
+                {paper.image ? (
+                  <img src={paper.image} alt="" loading="lazy" decoding="async" width="160" height="120" />
+                ) : (
+                  <Icon name="tabler:file-text" aria-hidden="true" />
+                )}
+              </div>
+              <div class="paper-copy">
+                <h3>{titleLink ? <a href={titleLink}>{paper.title}</a> : paper.title}</h3>
+                <p class="paper-authors">
+                  {paper.authors.split(profile.name).map((part, index) => (
+                    <>
+                      {index > 0 && <strong>{profile.name}</strong>}
+                      {part}
+                    </>
+                  ))}
+                </p>
+                <p class="paper-venue">
+                  <em>{paper.venue}</em>, {paper.year}
+                </p>
+                {paper.description && <p class="paper-description">{paper.description}</p>}
+                {paper.links && paper.links.length > 0 && (
+                  <nav class="paper-links" aria-label={`Resources for ${paper.title}`}>
+                    {paper.links.map((link) => (
+                      <a href={link.href}>{link.label}</a>
+                    ))}
+                  </nav>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <p class="academic-empty">Selected papers and preprints will appear here.</p>
+    )
+  }
+</section>
+
+<style>
+  .paper {
+    display: grid;
+    grid-template-columns: 10rem minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+  }
+  .paper + .paper {
+    border-top: 1px solid rgb(25 24 20 / 10%);
+  }
+  .paper-featured {
+    padding-inline: 1rem;
+    background: rgb(71 96 79 / 4%);
+  }
+  .paper-preview {
+    display: grid;
+    aspect-ratio: 4 / 3;
+    place-items: center;
+    overflow: hidden;
+    background: rgb(71 96 79 / 4%);
+    color: var(--aw-color-text-muted);
+  }
+  .paper-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .paper-preview :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.5;
+  }
+  .paper-copy {
+    overflow-wrap: anywhere;
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+  .paper-copy h3 {
+    color: var(--aw-color-text-heading);
+    font-family: var(--aw-font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .paper-copy a {
+    color: var(--aw-color-primary);
+    text-underline-offset: 0.2em;
+  }
+  .paper-copy a:hover {
+    text-decoration: underline;
+  }
+  .paper-authors,
+  .paper-venue,
+  .paper-description {
+    margin-top: 0.35rem;
+  }
+  .paper-description {
+    color: var(--aw-color-text-muted);
+  }
+  .paper-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    margin-top: 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  @media (max-width: 600px) {
+    .paper {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .paper-preview {
+      max-width: 12rem;
+    }
+  }
+</style>
