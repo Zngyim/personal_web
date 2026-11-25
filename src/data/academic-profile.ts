@@ -92,6 +92,13 @@ export const profile = {
 
 export const news: NewsItem[] = [
   {
+    date: '11/2026',
+    dateTime: '2026-11',
+    text: '🚀 We released EgoLoAF! Code and dataset are coming soon.',
+    href: 'https://egoloaf.github.io/',
+    linkLabel: 'Project',
+  },
+  {
     date: '10/2026',
     dateTime: '2026-10',
     text: '🚀 We released HIL-UMI, and the code is now open source!',
