@@ -143,7 +143,7 @@ export const publications: PublicationItem[] = [
     imageHeight: 427,
     links: [
       { label: 'Project', href: 'https://egoloaf.github.io/' },
-      { label: 'Paper', href: 'https://egoloaf.github.io/assets/EgoLoAF.pdf' },
+      { label: 'Paper', href: 'https://arxiv.org/abs/2611.32260' },
       { label: 'Video', href: 'https://egoloaf.github.io/#film' },
     ],
   },
