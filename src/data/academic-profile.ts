@@ -111,12 +111,14 @@ export const news: NewsItem[] = [
     linkLabel: 'Prof. Hao Dong',
   },
   {
+    date: '10/2025',
+    dateTime: '2025-10',
+    text: '🎖️ I received a First-Class Scholarship and was named an Outstanding Student at Xi’an Jiaotong University.',
+  },
+  {
     date: '05/2025',
     dateTime: '2025-05',
     text: '🏆 Our team received an Honorable Mention in the 2025 Mathematical Contest in Modeling (MCM).',
-  },
-  {
-    text: '🎖️ I received a First-Class Scholarship and was named an Outstanding Student at Xi’an Jiaotong University.',
   },
 ];
 
