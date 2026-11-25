@@ -73,7 +73,9 @@ export const profile = {
   location: '',
   portrait: '/images/profile.jpg',
   portraitAlt: 'Portrait of Yiming Zeng',
-  introduction: [] as string[],
+  introduction: [
+    'I am an undergraduate student majoring in Automation at Xi’an Jiaotong University. Currently, I am a research intern at the Center on Frontiers of Computing Studies (CFCS), Peking University, working with Prof. Hao Dong in PKU-Agibot Lab. My research interests lie in robot learning, particularly how robots can acquire and refine skills through human demonstrations and feedback. My recent work explores vision-language-action models and humanoid loco-manipulation. Outside research, I enjoy traveling and photographing the landscapes that make me pause.',
+  ],
   researchStatement: '',
   interests: [] as string[],
   links: [
