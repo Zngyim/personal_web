@@ -219,5 +219,24 @@ export const education: TimelineItem[] = [
 export const outsideResearch = {
   introduction: 'A collection of landscapes I love.',
   // Add favorite landscape images here, using each image's actual dimensions.
-  photos: [] as LandscapePhoto[],
+  photos: [
+    {
+      src: '/images/landscapes/waterfront-sunset.jpg',
+      alt: 'A waterfront boardwalk beneath an orange sunset, with lights reflected on the water.',
+      width: 1707,
+      height: 1280,
+    },
+    {
+      src: '/images/landscapes/city-at-dusk.jpg',
+      alt: 'Cars and glowing streetlights beneath a blue and orange evening sky.',
+      width: 1366,
+      height: 1024,
+    },
+    {
+      src: '/images/landscapes/sunlit-cove.jpg',
+      alt: 'Sunlight sparkling on turquoise waves beside a rocky beach.',
+      width: 1892,
+      height: 1279,
+    },
+  ] as LandscapePhoto[],
 };
