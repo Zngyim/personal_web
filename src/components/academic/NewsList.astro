@@ -9,8 +9,8 @@ const { items } = Astro.props;
 <ol class="news-list">
   {
     items.map((item) => (
-      <li>
-        <time datetime={item.dateTime}>{item.date}</time>
+      <li class:list={{ 'news-undated': !item.date }}>
+        {item.date && <time datetime={item.dateTime}>{item.date}</time>}
         <p>
           {item.text}
           {item.href && (
@@ -26,3 +26,17 @@ const { items } = Astro.props;
     ))
   }
 </ol>
+
+<style>
+  a {
+    white-space: nowrap;
+  }
+  .news-undated p {
+    grid-column: 2;
+  }
+  @media (max-width: 520px) {
+    .news-undated p {
+      grid-column: 1;
+    }
+  }
+</style>

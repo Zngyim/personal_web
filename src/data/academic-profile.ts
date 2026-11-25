@@ -6,7 +6,7 @@ export interface ProfileLink {
 }
 
 export interface NewsItem {
-  date: string;
+  date?: string;
   dateTime?: string;
   text: string;
   href?: string;
@@ -90,7 +90,35 @@ export const profile = {
   ] as ProfileLink[],
 };
 
-export const news: NewsItem[] = [];
+export const news: NewsItem[] = [
+  {
+    date: '10/2026',
+    dateTime: '2026-10',
+    text: '🚀 We released HIL-UMI, and the code is now open source!',
+    href: 'https://github.com/HIL-UMI/HIL-UMI-Official',
+    linkLabel: 'Code',
+  },
+  {
+    date: '05/2026',
+    dateTime: '2026-05',
+    text: '🏆 Our team was named a Meritorious Winner in the 2026 Mathematical Contest in Modeling (MCM).',
+  },
+  {
+    date: '03/2026',
+    dateTime: '2026-03',
+    text: '🎓 I joined PKU-Agibot Lab at Peking University, advised by',
+    href: 'https://zsdonghao.github.io/',
+    linkLabel: 'Prof. Hao Dong',
+  },
+  {
+    date: '05/2025',
+    dateTime: '2025-05',
+    text: '🏆 Our team received an Honorable Mention in the 2025 Mathematical Contest in Modeling (MCM).',
+  },
+  {
+    text: '🎖️ I received a First-Class Scholarship and was named an Outstanding Student at Xi’an Jiaotong University.',
+  },
+];
 
 export const publications: PublicationItem[] = [
   {
