@@ -169,7 +169,28 @@ export const publications: PublicationItem[] = [
   },
 ];
 
-export const honors: HonorItem[] = [];
+export const honors: HonorItem[] = [
+  {
+    year: '2026',
+    title: 'Meritorious Winner',
+    organization: 'Mathematical Contest in Modeling (MCM), COMAP',
+  },
+  {
+    year: '2025',
+    title: 'First-Class University Scholarship',
+    organization: 'Xi’an Jiaotong University',
+  },
+  {
+    year: '2025',
+    title: 'Outstanding Student',
+    organization: 'Xi’an Jiaotong University',
+  },
+  {
+    year: '2025',
+    title: 'Honorable Mention',
+    organization: 'Mathematical Contest in Modeling (MCM), COMAP',
+  },
+];
 
 // Research appointments, internships, and visiting positions.
 export const appointments: TimelineItem[] = [
