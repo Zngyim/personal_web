@@ -15,8 +15,10 @@ const { items = honors } = Astro.props;
           <li>
             <time>{honor.year}</time>
             <div>
-              <strong>{honor.title}</strong>
-              {honor.organization && <p>{honor.organization}</p>}
+              <div>
+                <strong>{honor.title + (honor.organization ? ',' : '')}</strong>
+                {honor.organization && <span class="honor-organization">{honor.organization}</span>}
+              </div>
               {honor.description && <p>{honor.description}</p>}
             </div>
           </li>
@@ -41,6 +43,7 @@ const { items = honors } = Astro.props;
     border-top: 1px solid rgb(25 24 20 / 10%);
   }
   .honors-list time,
+  .honor-organization,
   .honors-list p {
     color: var(--aw-color-text-muted);
     font-size: 0.8rem;
