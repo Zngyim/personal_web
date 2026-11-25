@@ -217,7 +217,7 @@ export const education: TimelineItem[] = [
 ];
 
 export const outsideResearch = {
-  introduction: 'I love traveling and capturing the landscapes that make me pause.',
-  // Add selected travel photographs here, using each image's actual dimensions.
+  introduction: 'A collection of landscapes I love.',
+  // Add favorite landscape images here, using each image's actual dimensions.
   photos: [] as LandscapePhoto[],
 };
